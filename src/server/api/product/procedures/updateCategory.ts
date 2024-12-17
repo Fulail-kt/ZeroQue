@@ -35,7 +35,7 @@ export const updateCategory = publicProcedure
       }
 
       // Build the update object
-      const updateData: Record<string, any> = {};
+      const updateData: Record<string, unknown> = {};
 
       if (input.companyId) {
         updateData.company = new mongoose.Types.ObjectId(input.companyId);

@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     /* Base Options: */
-    "types": ["next", "next/types/global"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "es2022",
@@ -9,9 +8,10 @@
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "isolatedModules": true,
-
+    
     /* Strictness */
     "strict": true,
+    "types": ["next", "next/types/global", "next/navigation"],
     "noUncheckedIndexedAccess": true,
     "checkJs": true,
     "strictNullChecks": true,

@@ -31,7 +31,7 @@ export const createCategory = publicProcedure
         company: new mongoose.Types.ObjectId(input.companyId),
         name: input.name,
         description: input.description,
-        subcategories: input.subcategories || [],
+        subcategories: input.subcategories ?? [],
         isActive: input.isActive ?? true
       });
 

@@ -24,7 +24,7 @@ const Category: React.FC<CategoryProps> = ({selectedCategory, setSelectedCategor
     return <div>Error loading categories</div>;
   }
 
-  const categories = categoryQueryResult?.categories || [];
+  const categories = categoryQueryResult?.categories ?? [];
 
   return (
     <div className='grid grid-flow-col-dense w-full overflow-y-auto scrollbar-none'>

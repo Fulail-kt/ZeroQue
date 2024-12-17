@@ -58,7 +58,7 @@ const CategorySchema = new Schema<ICategory>({
 }, { timestamps: true });
 
 // Create the model with explicit type
-const CategoryModel: Model<ICategory> = mongoose.models.Category || mongoose.model<ICategory>('Category', CategorySchema);
+const CategoryModel: Model<ICategory> = mongoose.models.Category ?? mongoose.model<ICategory>('Category', CategorySchema);
 
 export default CategoryModel;
 export type { ICategory, ISubcategory };

@@ -48,7 +48,7 @@ export const getProduct = publicProcedure
 
     const productWithIdsAsStrings = {
         ...product,
-        _id: product._id.toString(),
+        _id: product._id as string,
         sizes: product.sizes?.map((size) => ({
           ...size,
           _id: size._id ? size._id.toString() : undefined, 

@@ -108,7 +108,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
-    <Link href={`/item/${product._id}`}>
+    <Link href={`/item/${product._id as string}`}>
       <Card className="border-none flex justify-center md:h-56 h-48 overflow-hidden transition-all hover:shadow-lg">
         {/* Image Container */}
         <div className='w-36 md:w-52 relative flex flex-col items-center justify-end h-full'>

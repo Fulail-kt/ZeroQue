@@ -110,7 +110,7 @@ export async function middleware(req: NextRequest) {
   // Check if the path matches the company route pattern
   if (
     pathSegments.length >= 2 && 
-    companyRoutes.includes(pathSegments[1] as string)
+    companyRoutes.includes(pathSegments[1]!)
   ) {
     const requestedCompanyName = pathSegments[0];
 

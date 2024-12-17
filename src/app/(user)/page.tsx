@@ -51,7 +51,7 @@ const Page = () => {
   const filterProductsBySubcategory = (subcategoryId: string) => {
     return productsData?.products.filter(product => 
       product.subcategory?._id.toString() === subcategoryId
-    ) || [];
+    ) ?? [];
   };
 
   return (
@@ -96,7 +96,7 @@ const Page = () => {
                         <div className='grid scrollbar-none grid-flow-col-dense overflow-y-auto gap-1 md:gap-4 w-full'>
                           {subcategoryProducts.map((product, index) => (
                             <ProductCard 
-                              key={product?._id.toString()} 
+                              key={product?._id as string ?? index} 
                               product={product as unknown as Product}
                             />
                           ))}
@@ -132,8 +132,8 @@ const Page = () => {
                     </Button>
                   </div>
                   <div className="grid grid-flow-col-dense overflow-x-auto gap-4 scrollbar-none">
-                    {category.products.map((product) => (
-                      <ProductCard key={product._id.toString()} product={product as unknown as Product} />
+                    {category.products.map((product,index) => (
+                      <ProductCard key={product._id as string ?? index} product={product as unknown as Product} />
                     ))}
                   </div>
                 </div>

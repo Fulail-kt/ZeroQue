@@ -672,14 +672,20 @@ export const authConfig = {
           // If user doesn't exist, create new user
           if (!existingUser) {
             // Generate unique route name
-            const initialRouteName = (user.name || profile.name || 'google-user');
+            const initialRouteName = (user.name ?? profile.name ?? 'google-user');
             const uniqueRouteName = await generateUniqueRouteName(initialRouteName);
+
+            const profileImage = typeof user.image === 'string' 
+            ? user.image 
+            : typeof profile?.picture === 'string' 
+              ? profile.picture 
+              : '';
 
             // Prepare user data with strict typing
             const userData: Partial<ICompany> = {
-              name: user.name || profile.name || 'Google User',
-              email: user.email! || profile.email!,
-              profile: user.image || profile.picture,
+              name: user.name ?? profile.name ?? 'Google User',
+              email: user.email! ?? profile.email!,
+              profile: profileImage,
               googleId: account.providerAccountId,
               authProvider: 'google',
               userRole: 'COMPANY', 
@@ -704,8 +710,8 @@ export const authConfig = {
             }
           } else {
             // Update existing user with latest information
-            existingUser.name = user.name || existingUser.name;
-            existingUser.profile = user.image || existingUser.profile;
+            existingUser.name = user.name ?? existingUser.name;
+            existingUser.profile = user.image ?? existingUser.profile;
             
             // Only update googleId if not already set
             if (!existingUser.googleId) {
@@ -714,7 +720,7 @@ export const authConfig = {
             }
 
             // Update verification status if it changed
-            existingUser.isVerified = existingUser.isVerified || 
+            existingUser.isVerified = existingUser.isVerified ?? 
               (profile.email_verified ?? false);
 
             await existingUser.save();

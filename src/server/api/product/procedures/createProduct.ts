@@ -111,7 +111,7 @@ const CreateProductSchema = z.object({
   price: z.number().min(0).optional(),
   stock: z.number().min(0).optional()
 }).refine(
-  (data) => (data.sizes && data.sizes.length > 0) || data.price !== undefined ||data.stock !== undefined ,
+  (data) => (data.sizes && data.sizes.length > 0) ?? data.price !== undefined ?? data.stock !== undefined ,
   { 
     message: "Either sizes or standalone price / stock must be specified",
     path: ["price",'stock']
@@ -159,7 +159,7 @@ export const createProduct = protectedProcedure
                 resource_type: "image"
               }, 
               (error, result) => {
-                if (error) reject(error);
+                if (error) reject(error as Error);
                 else resolve(result?.secure_url);
               }
             ).end(imageFile.buffer);
@@ -180,7 +180,7 @@ export const createProduct = protectedProcedure
         images: uploadedImageUrls,
         category: input.category,
         subcategory: input.subcategory ? new mongoose.Types.ObjectId(input.subcategory) : null,
-        sizes: input.sizes || [],
+        sizes: input.sizes ?? [],
         price: input.sizes && input.sizes.length > 0 ? undefined : input.price,
         stock: input.sizes && input.sizes.length > 0 ? undefined : input.stock
       });

@@ -626,7 +626,7 @@ const ProductDetails = ({ productId }: PageProps) => {
     } 
     // For products without sizes
     else {
-      const maxStock = productData?.stock || 0;
+      const maxStock = productData?.stock ?? 0;
 
       if (operation === 'increment' && quantity < maxStock) {
         setQuantity(quantity + 1);
@@ -642,11 +642,11 @@ const ProductDetails = ({ productId }: PageProps) => {
     // For products with sizes
     if (productData.sizes && productData.sizes.length > 0) {
       const selectedSizeObj = productData.sizes.find((s) => s._id === selectedSize);
-      return (selectedSizeObj?.price || 0) * quantity;
+      return (selectedSizeObj?.price ?? 0) * quantity;
     } 
     // For products without sizes
     else {
-      return (productData.price || 0) * quantity;
+      return (productData.price ?? 0) * quantity;
     }
   };
 
@@ -687,7 +687,7 @@ const ProductDetails = ({ productId }: PageProps) => {
           category: {
             _id: productData.category._id instanceof Types.ObjectId 
               ? productData.category._id.toString() 
-              : String(productData.category._id),
+              : String(productData.category._id as string),
             name: category.name ?? '',
           },
           price: selectedSizeObj.price, 
@@ -707,7 +707,7 @@ const ProductDetails = ({ productId }: PageProps) => {
         category: {
           _id: productData.category._id instanceof Types.ObjectId 
             ? productData.category._id.toString() 
-            : String(productData.category._id),
+            : String(productData.category._id as string),
           name: category.name ?? '',
         },
         price: productData.price ?? 0,
@@ -767,7 +767,7 @@ const ProductDetails = ({ productId }: PageProps) => {
                             ? 'text-white bg-gray-800 rounded dark:bg-blue-800 dark:text-gray-200'
                             : 'dark:bg-gray-700 border rounded dark:border-none border-gray-300 dark:text-gray-300 flex'
                         }`}
-                        onClick={() => handleSizeSelect(size?._id!)}
+                        onClick={() => handleSizeSelect(size._id!)}
                       >
                         <span>{size.name}</span>
                       </div>

@@ -10,7 +10,7 @@ const sendWhatsAppOTPSchema = z.object({
 
 // Define the output type
 interface SendWhatsAppOTPResult {
-  error(arg0: string, error: any): unknown;
+  error(arg0: string, error: Error): unknown;
   success: boolean;
   messageId?: string; // Twilio's message ID if successful
   errorMessage?: string; // Error message if any

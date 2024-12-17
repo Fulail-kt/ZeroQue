@@ -292,8 +292,8 @@ import { useSession, signOut } from "next-auth/react";
 const Navbar: React.FC = () => {
   const { data: session } = useSession();
 
-  const handleLogout = () => {
-    signOut({ 
+  const handleLogout = async () => {
+   await signOut({ 
       callbackUrl: '/login' 
     });
   };

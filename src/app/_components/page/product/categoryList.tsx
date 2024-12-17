@@ -140,7 +140,7 @@ const CategoryList: React.FC = () => {
                     </TableHeader>
                     <TableBody>
                         {categoryQueryResult?.categories.map((category, index) => (
-                            <TableRow key={`${category._id?.toString() || index}`} className="">
+                            <TableRow key={`${category._id?.toString() ?? index}`} className="">
                                 <TableCell>{category.name}</TableCell>
                                 <TableCell>{category.description}</TableCell>
                                 <TableCell>

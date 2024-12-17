@@ -16,7 +16,7 @@ export const verifyPayment = publicProcedure
     try {
       // Verify payment signature
       const generatedSignature = crypto
-        .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET || 'kPJWBKuArGEh8fL76NvXFAsQ')
+        .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET ?? 'kPJWBKuArGEh8fL76NvXFAsQ')
         .update(`${input.razorpayOrderId}|${input.razorpayPaymentId}`)
         .digest('hex');
 

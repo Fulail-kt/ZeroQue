@@ -123,18 +123,18 @@ const ProductList: React.FC = () => {
   //   })
   // };
 
-  const handleDeleteConfirmation=()=>{
+  // const handleDeleteConfirmation=()=>{
 
-  }
-  const handleDelete=((productId:string)=>{
-    deleteProduct.mutateAsync({
+  // }
+  const handleDelete=async (productId:string)=>{
+   await deleteProduct.mutateAsync({
       productId:productId
     })
-  })
+  }
   
 
   // Filter products locally as a fallback (optional)
-  const filteredProducts = productsData?.products || [];
+  const filteredProducts = productsData?.products ?? [];
 
   return (
     <div className="space-y-6">
@@ -184,7 +184,7 @@ const ProductList: React.FC = () => {
             onSwipeLeft={() => {
               if (activeTab === 'active') {
                 void toggleProductStatusMutation.mutateAsync({
-                  productId: product._id.toString(),
+                  productId: product._id as string,
                   status: 'inactive'
                 });
               }
@@ -192,13 +192,13 @@ const ProductList: React.FC = () => {
             onSwipeRight={() => {
               if (activeTab === 'inactive') {
                 void toggleProductStatusMutation.mutateAsync({
-                  productId: product._id.toString(),
+                  productId: product._id as string,
                   status: 'active'
                 });
               }
             }}
 
-            key={`${product._id?.toString() || index}`}
+            key={`${product._id as string ?? index}`}
             className="w-full"
           >
             <div className="flex p-4 justify-between">
@@ -218,9 +218,9 @@ const ProductList: React.FC = () => {
                   <h3 className="text-lg font-bold">{product.title}</h3>
                   <p className="text-sm text-gray-600">{product.description}</p>
                  {product?.sizes.length>0 && <p className="text-sm font-semibold flex gap-2">
-                    <span><span className="font-thin">Name:</span> {product?.sizes[0]?.name || 'N/A'}</span>
-                    <span><span className="font-thin">Stock:</span> {product?.sizes[0]?.stock || 'N/A'}</span>
-                    <span><span className="font-thin">Price:</span> {product?.sizes[0]?.price || 'N/A'}</span>
+                    <span><span className="font-thin">Name:</span> {product?.sizes[0]?.name ?? 'N/A'}</span>
+                    <span><span className="font-thin">Stock:</span> {product?.sizes[0]?.stock ?? 'N/A'}</span>
+                    <span><span className="font-thin">Price:</span> {product?.sizes[0]?.price ?? 'N/A'}</span>
                   </p>}
                 </div>
               </div>
@@ -245,12 +245,12 @@ const ProductList: React.FC = () => {
                     <DropdownMenuItem
                       onSelect={() => {
                         setSelectedProduct({
-                          ...product,
-                          _id: product._id.toString(),
+                        ...product,
+                          _id: product._id as string,
                           category:
                             typeof product.category === "object" && "name" in product.category
-                              ? { _id: product.category._id?.toString(), name: product.category.name }
-                              : { _id: product.category.toString(), name: "" },
+                              ? { _id: product.category._id.toString(), name: product.category.name }
+                              : { _id: product?.category, name: "" },
                           subcategory:
                             product.subcategory && "name" in product.subcategory
                               ? { _id: product.subcategory._id?.toString(), name: product.subcategory.name }
@@ -267,7 +267,7 @@ const ProductList: React.FC = () => {
                     ) : (
                       <DropdownMenuItem>Activate</DropdownMenuItem>
                     )}
-                    <DropdownMenuItem  onSelect={() => setDeleteProductId(product._id.toString())}>Delete</DropdownMenuItem>
+                    <DropdownMenuItem  onSelect={() => setDeleteProductId(product._id as string)}>Delete</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -299,9 +299,9 @@ const ProductList: React.FC = () => {
             description="Are you sure you want to permanently delete this product? This action cannot be undone."
             confirmText="Delete"
             variant="destructive"
-            onConfirm={() => {
+            onConfirm={async() => {
               if (deleteProductId) {
-                handleDelete(deleteProductId);
+               await handleDelete(deleteProductId);
               }
             }}
             onCancel={() => setDeleteProductId(null)}

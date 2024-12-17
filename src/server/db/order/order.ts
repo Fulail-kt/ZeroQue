@@ -64,4 +64,4 @@ const OrderSchema = new mongoose.Schema<OrderDocument>({
 
 // Export the model
 export const OrderModel: OrderModelType =
-  mongoose.models.Order || mongoose.model<OrderDocument, OrderModelType>('Order', OrderSchema);
+  mongoose.models.Order ?? mongoose.model<OrderDocument, OrderModelType>('Order', OrderSchema);

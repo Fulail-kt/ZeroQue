@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 // import { auth } from '~/server/auth'
 import { useSession } from 'next-auth/react'
 
-const page = () => {
+const Page = () => {
   // product Dialog
   const [isDialogOpen, setDialogOpen] = useState(false);
   // category List
@@ -65,5 +65,5 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
 

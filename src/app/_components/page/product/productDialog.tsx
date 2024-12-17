@@ -902,9 +902,10 @@ import { Trash2, Plus, Loader2 } from 'lucide-react'
 import { api } from '~/trpc/react'
 import 'react-image-crop/dist/ReactCrop.css'
 import ImageCropper from '../../global/imageCropper'
+import { ICategory } from '~/server/db/category/category'
 
 // Enhanced Product Schema with Subcategory Validation
-const createProductSchema = (categories: any[] | undefined) => {
+const createProductSchema = (categories: ICategory[] | undefined) => {
   return z.object({
     _id: z.string().optional(),
     title: z.string().min(1, "Title is required"),
@@ -954,30 +955,26 @@ const createProductSchema = (categories: any[] | undefined) => {
       )
   }).refine(
     (data) => {
-      // Find the selected category
+      // Find the selected category with improved optional chaining
       const selectedCategory = categories?.find(cat => cat?._id === data.category);
       
-      // If the category has subcategories, subcategory must be selected
-      if (selectedCategory && selectedCategory.subcategories && selectedCategory.subcategories.length > 0) {
-        return data.subcategory !== undefined && data.subcategory.trim() !== '';
-      }
-      
-      return true;
+      // Simplified validation for subcategory requirement
+      return !selectedCategory?.subcategories?.length || 
+             (data.subcategory !== undefined && data.subcategory.trim() !== '');
     },
     { 
       message: "Subcategory is required for this category",
       path: ["subcategory"]
     }
   ).refine(
-    // Ensure price is required if no sizes
-    (data) => data.sizes && data.sizes.length > 0 ? true : data.price !== undefined,
+    // Simplified price requirement check
+    (data) => data.sizes?.length ? true : data.price !== undefined,
     { 
       message: "Price is required when no sizes are specified",
       path: ["price"]
     }
   );
 };
-
 interface ProductSize {
   _id?: string;
   name: string;
@@ -1020,8 +1017,8 @@ export const ProductDialog: React.FC<{
 
     // Create mutation
     const createProduct = api.product.createProduct.useMutation({
-      onSuccess: () => {
-        utils.product.getProducts.refetch();
+      onSuccess: async() => {
+      await  utils.product.getProducts.refetch();
         onClose();
       },
       onError: (error) => {
@@ -1032,8 +1029,8 @@ export const ProductDialog: React.FC<{
 
     // Edit mutation
     const updateProduct = api.product.updateProduct.useMutation({
-      onSuccess: () => {
-        utils.product.getProducts.refetch();
+      onSuccess: async() => {
+       await utils.product.getProducts.refetch();
         onClose();
       },
       onError: (error) => {
@@ -1055,13 +1052,13 @@ export const ProductDialog: React.FC<{
     const form = useForm<z.infer<typeof productSchema>>({
       resolver: zodResolver(productSchema),
       defaultValues: {
-        title: initialData?.title || '',
-        description: initialData?.description || '',
-        images: initialData?.images || [],
-        category: initialData?.category?._id || '',
-        subcategory: initialData?.subcategory?._id || '',
-        price: initialData?.price || undefined,
-        stock: initialData?.stock || undefined,
+        title: initialData?.title ?? '',
+        description: initialData?.description ?? '',
+        images: initialData?.images ?? [],
+        category: initialData?.category?._id ?? '',
+        subcategory: initialData?.subcategory?._id ?? '',
+        price: initialData?.price ?? undefined,
+        stock: initialData?.stock ?? undefined,
         sizes: initialData?.sizes?.length
           ? initialData.sizes.map((size) => ({
               _id: size._id,
@@ -1074,7 +1071,7 @@ export const ProductDialog: React.FC<{
     });
       
     // Get subcategories for the selected category
-    const subcategories = categoriesData?.categories.find(cat => cat?._id === selectedCategory)?.subcategories || [];
+    const subcategories = categoriesData?.categories.find(cat => cat?._id === selectedCategory)?.subcategories ?? [];
       
     // Initialize images and category from initial data
     useEffect(() => {
@@ -1085,7 +1082,7 @@ export const ProductDialog: React.FC<{
         setSelectedCategory(initialData.category._id);
       }
       // Set initial sizes visibility
-      setShowSizes(initialData?.sizes && initialData.sizes.length > 0 || false);
+      setShowSizes((initialData?.sizes && initialData.sizes.length > 0) ?? false);
     }, [initialData]);
       
     useEffect(() => {
@@ -1109,13 +1106,13 @@ export const ProductDialog: React.FC<{
       form.setValue('images', updatedImages);
     };
 
-    const sizes = form.watch('sizes') || [];
+    const sizes = form.watch('sizes') ?? [];
 
     const onSubmit = (data: z.infer<typeof productSchema>) => {
       const companyId = '674ac8e13644f51bd33ad5a0';
       const submitData = {
         ...data,
-        category: data.category || initialData?.category?._id || '',
+        category: data.category ?? initialData?.category?._id ?? '',
         companyId,
         // If sizes exist, remove standalone price
         ...(sizes.length > 0 ? { price: undefined } : {})
@@ -1126,7 +1123,7 @@ export const ProductDialog: React.FC<{
       } else {
         updateProduct.mutate({
           ...submitData,
-          productId: initialData?._id as string
+          productId: initialData?._id ?? ''
         });
       }
     };
@@ -1341,7 +1338,7 @@ export const ProductDialog: React.FC<{
               {sizes.length > 0 &&
                 sizes.map((_, index) => (
                   <div
-                    key={form.getValues(`sizes.${index}._id`) || `size-${index}`}
+                    key={form.getValues(`sizes.${index}._id`) ?? `size-${index}`}
                     className="grid grid-cols-4 gap-2 mb-2"
                   >
                     {/* Size Name */}
@@ -1419,7 +1416,7 @@ export const ProductDialog: React.FC<{
                 {/* Validation Message */}
                 {!showSizes && (
                   <p className="text-sm text-yellow-500 mt-1">
-                    Click "Add Size" to specify product sizes
+                   {` Click "Add Size" to specify product sizes`}
                   </p>
                 )}
               </div>
@@ -1428,7 +1425,7 @@ export const ProductDialog: React.FC<{
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> {`Processing...`}
                 </>
               ) : (
                 action === 'create' ? 'Create Product' : 'Update Product'

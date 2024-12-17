@@ -15,7 +15,7 @@ export const getCategories = publicProcedure
   )
   .query(async ({ input }) => {
     try {
-      const filter: Record<string, any> = {};
+      const filter: Record<string, unknown> = {};
 
       // Add company filter if companyId is provided
       if (input?.companyId) {

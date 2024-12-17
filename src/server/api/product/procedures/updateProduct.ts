@@ -25,7 +25,7 @@ const UpdateProductSchema = z.object({
   price: z.number().min(0).optional(),
   stock: z.number().min(0).optional()
 }).refine(
-  (data) => (data.sizes && data.sizes.length > 0) || data.price !== undefined || data.stock!==undefined,
+  (data) => (data.sizes && data.sizes.length > 0) ?? data.price !== undefined ?? data.stock!==undefined,
   { 
     message: "Either sizes or standalone price / stock must be specified",
     path: ["price"]
@@ -62,8 +62,20 @@ export const updateProduct = publicProcedure
         api_secret: 'tpjG4xLeTAaSZJBFMUQ6AfIcytw'
       });
 
-      // Prepare update data
-      const updateData: Record<string, any> = {};
+      type ProductUpdateFields = {
+        company?: mongoose.Types.ObjectId;
+        title?: string;
+        description?: string;
+        images?: string[];
+        category?: string;
+        subcategory?: string;
+        sizes?: z.infer<typeof SizeSchema>[];
+        status?: "active" | "inactive";
+        price?: number;
+        stock?: number;
+      };
+
+      const updateData: ProductUpdateFields = {};
       const currentImages = existingProduct?.images || [];
 
       // Handle image uploads and deletions
@@ -86,8 +98,8 @@ export const updateProduct = publicProcedure
                   resource_type: "image"
                 }, 
                 (error, result) => {
-                  if (error) reject(error);
-                  else resolve(result?.secure_url || '');
+                  if (error) reject(error as Error);
+                  else resolve(result?.secure_url ?? '');
                 }
               ).end(imageFile.buffer);
             });

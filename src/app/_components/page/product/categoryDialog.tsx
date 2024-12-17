@@ -257,8 +257,8 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
   
   // Create mutation
   const createCategory = api.product.createCategory.useMutation({
-    onSuccess: () => {
-      utils.product.getCategories.refetch();
+    onSuccess: async () => {
+      await utils.product.getCategories.refetch();
       onClose();
     },
     onError: (error) => {
@@ -268,8 +268,8 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
 
   // Edit mutation
   const updateCategory = api.product.updateCategory.useMutation({
-    onSuccess: () => {
-      utils.product.getCategories.refetch({ companyId: '674ac8e13644f51bd33ad5a0' });
+    onSuccess: async () => {
+     await utils.product.getCategories.refetch({ companyId: '674ac8e13644f51bd33ad5a0' });
       onClose();
     },
     onError: (error) => {
@@ -280,9 +280,9 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
   const form = useForm<z.infer<typeof categorySchema>>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
-      name: initialData?.name || '',
-      description: initialData?.description || '',
-      subcategories: initialData?.subcategories || [],
+      name: initialData?.name ?? '',
+      description: initialData?.description ?? '',
+      subcategories: initialData?.subcategories ?? [],
     },
   });
 
@@ -293,7 +293,7 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
     } else {
       updateCategory.mutate({ 
         ...data, 
-        _id: initialData?._id as string,
+        _id: initialData?._id ?? "",
       });
     }
   };
@@ -304,7 +304,7 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
       ? createCategory.status === 'pending' 
       : updateCategory.status === 'pending';
 
-  const subcategories = form.watch('subcategories') || [];
+  const subcategories = form.watch('subcategories') ?? [];
 
   return (
     <Form {...form}>
