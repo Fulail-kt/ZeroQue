@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     /* Base Options: */
+    "types": ["next", "next/types/global"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "es2022",
@@ -23,6 +24,7 @@
     "jsx": "preserve",
     "plugins": [{ "name": "next" }],
     "incremental": true,
+    
 
     /* Path Aliases */
     "baseUrl": ".",
