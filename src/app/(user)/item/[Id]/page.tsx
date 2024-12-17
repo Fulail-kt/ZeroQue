@@ -1,83 +1,29 @@
-// import { Metadata } from "next";
-// import { notFound } from "next/navigation";
-// import { api } from "~/trpc/react"; // Import your tRPC hook
+import { useRouter } from "next/router";
+import { api } from "~/trpc/react";
 
-// interface ProductPageProps {
-//   params: { Id: string };
-// }
+export default function ProductDetailPage() {
+  const router = useRouter();
+  const productId = router.query.Id as string;
 
-// export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-//   const id = params.Id;
+  const { data: product, isLoading, error } = api.product.getProduct.useQuery(
+    { productId },
+    { 
+      enabled: !!productId,
+      // Optional: only query if productId is valid
+      // You might want to add additional validation here
+    }
+  );
 
-//   // Fetch the product name for dynamic metadata
-//   const {data:product} = await api.product.getProduct.useQuery({productId:id})
-
-//   if (!product) {
-//     return { title: "Product Not Found" };
-//   }
-
-//   return { title: `Product: ${product?.title}` };
-// }
-
-// export default async function ProductPage({ params }: ProductPageProps) {
-//   const id = params.Id;
-
-//   // Fetch product data using an API or tRPC
-//   const {data:product} =  await api.product.getProduct.useQuery({productId:id})
-
-//   if (!product) {
-//     notFound(); // Show 404 page
-//   }
-
-//   return (
-//     <div>
-//       <h1>{product?.title}</h1>
-//       <p>{product?.description}</p>
-//       <p>Price: ${product.price}</p>
-//     </div>
-//   );
-// }
-
-
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { api } from "~/trpc/react"; // tRPC hook for client-side (you won't use this on server-side)
-import  {ProductModel}  from "~/server/db/product"; // Mongoose model for products
-
-interface ProductPageProps {
-  params: { Id: string };
-}
-
-// Generate Metadata for Dynamic Head Tag
-export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-  const id = params.Id;
-
-  // Fetch product data directly using Mongoose
-  const product = await ProductModel.findById(id);
-
-  if (!product) {
-    return { title: "Product Not Found" };
-  }
-
-  return { title: `Product: ${product.title}` };
-}
-
-// Server-Side Component
-export default async function ProductPage({ params }: ProductPageProps) {
-  const id = params.Id;
-
-  // Fetch product data directly using Mongoose
-  const product = await ProductModel.findById(id);
-
-  if (!product) {
-    notFound(); // Show 404 page
-  }
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  if (!product) return <div>Product not found</div>;
 
   return (
     <div>
       <h1>{product.title}</h1>
       <p>{product.description}</p>
       <p>Price: ${product.price}</p>
+      {/* <p>Category: {product.category}</p> */}
     </div>
   );
 }
