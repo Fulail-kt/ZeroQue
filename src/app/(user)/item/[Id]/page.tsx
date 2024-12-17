@@ -1,3 +1,4 @@
+'use client'
 import { useRouter } from "next/router";
 import { api } from "~/trpc/react";
 
