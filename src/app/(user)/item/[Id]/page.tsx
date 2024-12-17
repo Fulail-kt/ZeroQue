@@ -1,5 +1,7 @@
 // 'use client'
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import ProductDetails from "~/app/_components/productDetails";
 
 // import { useRouter } from 'next/router';
