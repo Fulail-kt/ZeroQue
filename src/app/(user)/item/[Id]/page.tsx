@@ -1,19 +1,50 @@
-import React from 'react';
+// import React from 'react';
 import ProductDetails from '../../../_components/productDetails';
-import { getSession } from '~/server/auth/config';
+// import { getSession } from '~/server/auth/config';
+// import { Metadata } from 'next';
+
+// // Use explicit type definition for params
+// export type PageProps = {
+//   params: {
+//     Id: string;
+//   };
+// };
+
+// export default async function Page({ params }: PageProps) {
+//   const session = await getSession();
+//   console.log(session); // Log session details for debugging
+
+//   return (
+//     <div>
+//       <ProductDetails productId={params.Id} />
+//     </div>
+//   );
+// }
+
+// // Explicitly type the generateMetadata function
+// export async function generateMetadata({ 
+//   params 
+// }: PageProps): Promise<Metadata> {
+//   return {
+//     title: `Product ${params.Id}`,
+//   };
+// }
+
 import { Metadata } from 'next';
 
-// Use Params type from Next.js
-export interface Params {
+// Define params type explicitly
+type Params = {
   Id: string;
-}
+};
 
-// Explicit type for page props using Next.js types
-export interface PageProps {
+// Define PageProps with explicit typing
+type PageProps = {
   params: Params;
-}
+};
 
 export default async function Page({ params }: PageProps) {
+  // Import getSession inside the function to avoid potential import issues
+  const { getSession } = await import('~/server/auth/config');
   const session = await getSession();
   console.log(session); // Log session details for debugging
 
@@ -24,7 +55,7 @@ export default async function Page({ params }: PageProps) {
   );
 }
 
-// Optional: Add generateMetadata if needed
+// Metadata generation function
 export async function generateMetadata({ 
   params 
 }: { 
