@@ -38,8 +38,7 @@ interface CheckoutFormData {
   phone2?: string;
   tableNumber?: string;
 }
-
-export const CheckoutPage: React.FC = () => {
+const CheckoutPage: React.FC = () => {
   const router = useRouter();
   const { cart, clearCart } = useCartStore();
 
