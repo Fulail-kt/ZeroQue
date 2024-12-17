@@ -1,37 +1,39 @@
-import { GetServerSideProps } from "next";
-import { api } from "~/trpc/react";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { api } from "~/trpc/react"; // Import your tRPC hook
 
-interface ProductProps {
-  Id: string;
+interface ProductPageProps {
+  params: { Id: string };
 }
 
-const ProductPage = ({ Id }: ProductProps) => {
-  // Fetch product details using tRPC
-  const { data: product, isLoading, error } = api.product.getProduct.useQuery({ productId:Id  });
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const id = params.Id;
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  // Fetch the product name for dynamic metadata
+  const {data:product} = await api.product.getProduct.useQuery({productId:id})
+
+  if (!product) {
+    return { title: "Product Not Found" };
+  }
+
+  return { title: `Product: ${product?.title}` };
+}
+
+export default async function ProductPage({ params }: ProductPageProps) {
+  const id = params.Id;
+
+  // Fetch product data using an API or tRPC
+  const {data:product} =  await api.product.getProduct.useQuery({productId:id})
+
+  if (!product) {
+    notFound(); // Show 404 page
+  }
 
   return (
     <div>
       <h1>{product?.title}</h1>
-      <p>{product?.description}</p>
-      <p>Price: ${product?.price}</p>
+      {/* <p>{product?.description}</p>
+      <p>Price: ${product.price}</p> */}
     </div>
   );
-};
-
-// Fetch the `id` from the route params
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.params as { id: string };
-
-  if (!id) {
-    return { notFound: true };
-  }
-
-  return {
-    props: { id },
-  };
-};
-
-export default ProductPage;
+}
