@@ -1,30 +1,25 @@
-'use client'
-import { useRouter } from "next/router";
-import { api } from "~/trpc/react";
+// 'use client'
 
-export default function ProductDetailPage() {
-  const router = useRouter();
-  const productId = router.query.Id as string;
+import ProductDetails from "~/app/_components/productDetails";
 
-  const { data: product, isLoading, error } = api.product.getProduct.useQuery(
-    { productId },
-    { 
-      enabled: !!productId,
-      // Optional: only query if productId is valid
-      // You might want to add additional validation here
-    }
-  );
+// import { useRouter } from 'next/router';
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-  if (!product) return <div>Product not found</div>;
+// import React from 'react'
+// import ProductDetails from '~/app/_components/productDetails';
 
-  return (
-    <div>
-      <h1>{product.title}</h1>
-      <p>{product.description}</p>
-      <p>Price: ${product.price}</p>
-      {/* <p>Category: {product.category}</p> */}
-    </div>
-  );
-}
+// const Page = () => {
+//     const router = useRouter();
+//     const productId = router.query.Id as string;
+//   return (
+//     <div><ProductDetails productId={productId} /></div>
+//   )
+// }
+
+// export default Page
+
+// src/app/product/[id]/page.tsx
+export default function Page({ params }: { params: { id: string } }) {
+    const productId = params.id;
+    
+    return <ProductDetails productId={productId} />;
+  }
