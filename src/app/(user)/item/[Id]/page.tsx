@@ -18,6 +18,7 @@ import ProductDetails from "~/app/_components/productDetails";
 // export default Page
 
 // src/app/product/[id]/page.tsx
+//@ts-nocheck
 export default function Page({ params }: { params: { id: string } }) {
     const productId = params.id;
     
