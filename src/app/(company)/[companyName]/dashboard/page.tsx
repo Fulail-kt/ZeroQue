@@ -20,14 +20,14 @@ import {
   TabsList, 
   TabsTrigger 
 } from "~/components/ui/tabs";
-import {
-    ChartConfig,
-    ChartContainer,
-    ChartLegend,
-    ChartLegendContent,
-    ChartTooltip,
-    ChartTooltipContent,
-  } from "~/components/ui/chart"
+// import {
+//     ChartConfig,
+//     ChartContainer,
+//     ChartLegend,
+//     ChartLegendContent,
+//     ChartTooltip,
+//     ChartTooltipContent,
+//   } from "~/components/ui/chart"
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
 import { 
   LayoutGrid, 
