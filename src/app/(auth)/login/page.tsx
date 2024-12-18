@@ -65,6 +65,8 @@
 // }
 'use client';
 
+import React from "react";
+import Link from 'next/link';
 import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -74,11 +76,18 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { getSession, signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { motion } from 'framer-motion';
+import { Fingerprint } from 'lucide-react';
+import Loading from "~/app/_components/global/loading";
 
 // Define the login schema with Zod for type-safe validation
 const loginSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  email: z.string()
+    .email({ message: 'Invalid email address format' })
+    .max(100, { message: 'Email address is too long' }),
+  password: z.string()
+    .min(8, { message: 'Password must be at least 8 characters' })
+    .max(32, { message: 'Password cannot exceed 32 characters' }),
 });
 
 // Infer the type from the Zod schema
@@ -91,7 +100,6 @@ export default function LoginForm() {
   // Redirection logic in useEffect
   useEffect(() => {
     if (status !== "loading" && session) {
-      // Use optional chaining to safely access routeName
       const routeName = session.user?.routeName || 'default';
       router.push(`/${routeName}/dashboard`);
     }
@@ -100,9 +108,10 @@ export default function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormInputs>({
     resolver: zodResolver(loginSchema),
+    mode: 'onChange',
   });
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
@@ -114,38 +123,24 @@ export default function LoginForm() {
       });
       if (result?.error) {
         console.error("Login error:", result.error);
-        // Optionally, show an error message to the user
         return;
-      }else{
+      } else {
         const sessionData = await getSession();
         
         if (sessionData?.user?.routeName) {
           router.push(`/co/${sessionData.user.routeName}/dashboard`);
         } else {
-          // Fallback redirect if routeName is not available
           router.push('/dashboard');
         }
       }
     } catch (error) {
       console.error("Login error:", error);
-      // setError("root", {
-      //   type: "manual",
-      //   message: "An unexpected error occurred"
-      // });
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    try {
-      await signIn("google", { callbackUrl: "/" });
-    } catch (error) {
-      console.error("Google sign-in error:", error);
     }
   };
 
   // Render logic
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return <Loading/>;
   }
 
   if (session) {
@@ -153,65 +148,121 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col justify-center px-4 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="text-center text-3xl font-bold tracking-tight">
-          Sign in to your account
-        </h2>
-      </div>
-
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div>
-              <Label htmlFor="email">Email address</Label>
-              <Input
-                id="email"
-                type="email"
-                {...register("email")}
-                className="mt-1 block w-full"
-                aria-invalid={errors.email ? "true" : "false"}
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600" role="alert">
-                  {errors.email.message}
-                </p>
-              )}
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Navigation Header */}
+      <nav className="">
+        <div className="max-w-7xl">
+          <div className="flex justify-between h-10">
+            <div className="flex mt-2 px-4 items-center">
+              {/* Logo */}
+              <Link href="/" className="flex-shrink-0 flex items-center">
+                <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                  Logo
+                </span>
+              </Link>
+              
+              {/* Home Link */}
+              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                <Link href="/" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white px-3 py-2 text-sm font-medium">
+                  Home
+                </Link>
+              </div>
             </div>
-
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                {...register("password")}
-                className="mt-1 block w-full"
-                aria-invalid={errors.password ? "true" : "false"}
-              />
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600" role="alert">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <Button type="submit" className="w-full">
-                Sign in
-              </Button>
-            </div>
-
-            <div>
-              <Button
-                type="button"
-                onClick={handleGoogleSignIn}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                Sign in with Google
-              </Button>
-            </div>
-          </form>
+          </div>
         </div>
+      </nav>
+
+      {/* Login Form */}
+      <div className="flex items-center justify-center py-4 px-4 sm:px-6 lg:px-8">
+        <motion.div
+          className="w-full max-w-md space-y-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="text-center">
+            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
+              Sign in to your account
+            </h2>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              Or{' '}
+              <Link href="/signup" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400">
+                create a new account
+              </Link>
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              {/* Email Input */}
+              <div>
+                <Label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Email address
+                </Label>
+                <div className="mt-1 relative">
+                  <Input
+                    id="email"
+                    type="email"
+                    {...register('email')}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white transition-colors duration-200"
+                  />
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email.message}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Password Input */}
+              <div>
+                <Label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Password
+                </Label>
+                <div className="mt-1 relative">
+                  <Input
+                    id="password"
+                    type="password"
+                    {...register('password')}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white transition-colors duration-200"
+                  />
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password.message}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Submit and Google Signin Buttons */}
+              <div className="space-y-4">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? 'Signing in...' : 'Sign in'}
+                </Button>
+
+                <div className="relative flex items-center justify-center">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-gray-300 dark:border-gray-600"></span>
+                  </div>
+                  <div className="relative px-4 text-center">
+                    <span className="bg-white dark:bg-gray-800 px-2 text-sm text-gray-500 dark:text-gray-400">
+                      Or continue with
+                    </span>
+                  </div>
+                </div>
+
+                <Button
+                  type="button"
+                  onClick={() => signIn('google')}
+                  className="w-full py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-md shadow-md transition-colors duration-200 flex items-center justify-center gap-2"
+                >
+                  <Fingerprint className="h-5 w-5" />
+                  Sign in with Google
+                </Button>
+              </div>
+            </form>
+          </div>
+        </motion.div>
       </div>
     </div>
   );

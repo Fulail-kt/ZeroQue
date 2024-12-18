@@ -1,9 +1,10 @@
 import "~/styles/globals.css";
-
-// import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
+import { Manrope } from "next/font/google";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -11,29 +12,32 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-// export default function RootLayout({
-//   children,
-// }: Readonly<{ children: React.ReactNode }>) {
-//   return (
-//     <html lang="en" className={`${GeistSans.variable}`}>
-//       <body>
-//         <TRPCReactProvider>{children}</TRPCReactProvider>
-//       </body>
-//     </html>
-//   );
-// }
+
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap"
+});
+
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap"
+});
 
 
 import { ThemeProvider } from "~/components/theme-provider"
-import Navbar from "./_components/navbar";
+// import Navbar from "./_components/navbar";
 import { SessionProvider } from "next-auth/react";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
         <head />
-        <body>
+        <body className="font-sans">
           <SessionProvider>
             <ThemeProvider
               attribute="class"

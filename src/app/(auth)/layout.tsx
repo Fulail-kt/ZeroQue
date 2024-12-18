@@ -35,7 +35,7 @@ export default function AuthLayout({
   }) {
     return (
       <div className="min-h-screen flex">
-        <div className="w-full  flex items-center justify-center p-8">
+        <div className="w-full  flex items-center justify-center">
           <SessionProvider>
             <div className="w-full">
               {children}

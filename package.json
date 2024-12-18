@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "next build",
-     "clean": "rm -rf .next",
+    "clean": "rm -rf .next",
     "check": "next lint && tsc --noEmit",
     "dev": "next dev --turbo",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
@@ -55,6 +55,7 @@
     "react-easy-crop": "^5.2.0",
     "react-hook-form": "^7.53.2",
     "react-image-crop": "^11.0.7",
+    "react-spinners": "^0.15.0",
     "react-swipeable": "^7.0.2",
     "recharts": "^2.13.3",
     "resend": "^4.0.1",

@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { api } from "~/trpc/react";
 import { toast } from "sonner";
+import Loading from '~/app/_components/global/loading';
 
  function VerifyEmailContent() {
   const router = useRouter();
@@ -108,7 +109,7 @@ import { toast } from "sonner";
 
 export default function VerifyEmailPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loading/>}>
       <VerifyEmailContent />
     </Suspense>
   );

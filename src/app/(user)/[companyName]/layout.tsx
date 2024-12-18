@@ -119,6 +119,7 @@ import Script from "next/script";
 import { api, TRPCReactProvider } from "~/trpc/react";
 import { notFound } from "next/navigation";
 import { use, useEffect } from "react";
+import Loading from "~/app/_components/global/loading";
 
 export default function RootLayout({
   children,
@@ -151,9 +152,7 @@ export default function RootLayout({
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p>Loading...</p>
-      </div>
+        <Loading/>
     );
   }
   

@@ -4,6 +4,7 @@ import { TRPCClientError } from '@trpc/client';
 import React from 'react'
 import { ICategory } from '~/server/db/category/category';
 import { api } from '~/trpc/react'
+import Loading from './global/loading';
 
 interface CategoryProps {
   selectedCategory: ICategory | null;
@@ -17,7 +18,7 @@ const Category: React.FC<CategoryProps> = ({selectedCategory, setSelectedCategor
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading/>;
   }
 
   if (error) {
