@@ -130,7 +130,7 @@ export default function LoginForm() {
         if (sessionData?.user?.routeName) {
           router.push(`/co/${sessionData.user.routeName}/dashboard`);
         } else {
-          router.push('/dashboard');
+          router.push('/');
         }
       }
     } catch (error) {

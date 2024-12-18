@@ -121,7 +121,7 @@ import { notFound } from "next/navigation";
 import { use, useEffect } from "react";
 import Loading from "~/app/_components/global/loading";
 
-export default function RootLayout({
+export default function CompanyLayout({
   children,
   params,
 }: {

@@ -9,8 +9,9 @@ import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Eye, EyeOff, Fingerprint } from 'lucide-react';
 import { api } from '~/trpc/react';
-import { signIn } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 // Zod schema for form validation
 const signupSchema = z.object({
@@ -34,7 +35,9 @@ const signupSchema = z.object({
 type SignupFormData = z.infer<typeof signupSchema>;
 
 const SignupPage: React.FC = () => {
+  const { data: session, status } = useSession();
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const router=useRouter()
 
   const {
     register,
@@ -45,7 +48,15 @@ const SignupPage: React.FC = () => {
     mode: 'onChange',
   });
 
-  const createAccount = api.company.createAccount.useMutation();
+  const createAccount = api.company.createAccount.useMutation({
+    onSuccess: () => {
+      console.log('Account created successfully!');
+      router.push('/login');
+    },
+    onError: (error) => {
+      console.error('Account creation failed:', error);
+    },
+  });
 
   const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
     try {
@@ -55,6 +66,24 @@ const SignupPage: React.FC = () => {
       console.error('Signup error:', error);
     }
   };
+
+  const handleGoogleSignUp=async()=>{
+    try {
+      const result = await signIn('google', { redirect: false });
+      if (result?.ok) {
+        const sessionData = await getSession();
+        if (sessionData?.user?.routeName) {
+          router.push(`/co/${sessionData.user.routeName}/dashboard`);
+        } else {
+          router.push('/');
+        }
+      } else {
+        console.error('Google Sign-in failed:', result?.error);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+    }
+  }
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -209,7 +238,7 @@ const SignupPage: React.FC = () => {
 
                 <Button
                   type="button"
-                  onClick={() => signIn('google')}
+                  onClick={() =>handleGoogleSignUp()}
                   className="w-full py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-md shadow-md transition-colors duration-200 flex items-center justify-center gap-2"
                 >
                   <Fingerprint className="h-5 w-5" />
