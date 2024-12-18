@@ -1,9 +1,12 @@
 import React from 'react'
+import ProductDetails from '~/app/_components/productDetails'
 
 export default async function Page({params}:{params:Promise<{Id:string}>}){
-    const name = (await params).Id
+    const ProductId = (await params).Id
   return (
-    <div>{name}</div>
+    <div>
+        <ProductDetails productId={ProductId} />
+    </div>
   )
 }
 
