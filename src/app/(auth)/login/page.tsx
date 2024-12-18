@@ -43,7 +43,7 @@
 //             </Link>
 //           </div>
 //           <div className="flex flex-col items-center gap-2">
-          
+
 //             <div className="flex flex-col items-center justify-center gap-4">
 //               <p className="text-center text-2xl text-white">
 //                 {session && <span>Logged in as {session.user?.name}</span>}
@@ -126,7 +126,7 @@ export default function LoginForm() {
         return;
       } else {
         const sessionData = await getSession();
-        
+
         if (sessionData?.user?.routeName) {
           router.push(`/co/${sessionData.user.routeName}/dashboard`);
         } else {
@@ -140,7 +140,7 @@ export default function LoginForm() {
 
   // Render logic
   if (status === "loading") {
-    return <Loading/>;
+    return <Loading />;
   }
 
   if (session) {
@@ -160,7 +160,7 @@ export default function LoginForm() {
                   Logo
                 </span>
               </Link>
-              
+
               {/* Home Link */}
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <Link href="/" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white px-3 py-2 text-sm font-medium">
@@ -236,9 +236,14 @@ export default function LoginForm() {
                   type="submit"
                   disabled={isSubmitting}
                   className="w-full py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-semibold rounded-md shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent default behavior
+                    if (isSubmitting) return; // Avoid double submissions
+                  }}
                 >
                   {isSubmitting ? 'Signing in...' : 'Sign in'}
                 </Button>
+
 
                 <div className="relative flex items-center justify-center">
                   <div className="absolute inset-0 flex items-center">
