@@ -120,7 +120,7 @@ export default function LoginForm() {
         const sessionData = await getSession();
         
         if (sessionData?.user?.routeName) {
-          router.push(`/${sessionData.user.routeName}/dashboard`);
+          router.push(`/co/${sessionData.user.routeName}/dashboard`);
         } else {
           // Fallback redirect if routeName is not available
           router.push('/dashboard');

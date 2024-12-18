@@ -139,3 +139,5 @@ export const config = {
     '/:companyName/(dashboard|profile|products)'
   ]
 };
+
+
