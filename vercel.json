@@ -1,9 +1,7 @@
 {
     "rewrites": [
-      {
-        "source": "/:path*",
-        "destination": "/index.html"
-      }
+      { "source": "/signup", "destination": "/signup" },
+      { "source": "/:path*", "destination": "/:path*" }
     ]
   }
   
