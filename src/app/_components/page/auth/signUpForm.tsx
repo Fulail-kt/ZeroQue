@@ -227,17 +227,23 @@ const SignupPage: React.FC = () => {
               </div>
 
               <Button
-                type="button"
-                onClick={() =>{signIn("google")
-                  router.push('/')}
-                }
-                className="w-full py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-white 
-                  border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 
-                  rounded-md shadow-md transition-colors duration-200 flex items-center justify-center gap-2"
-              >
-                <Fingerprint className="h-5 w-5" />
-                Sign up with Google
-              </Button>
+  type="button"
+  onClick={async () => {
+    try {
+      await signIn("google");
+      router.push('/');
+    } catch (error) {
+      console.error("Google sign-in failed:", error);
+    }
+  }}
+  className="w-full py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-white 
+    border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 
+    rounded-md shadow-md transition-colors duration-200 flex items-center justify-center gap-2"
+>
+  <Fingerprint className="h-5 w-5" />
+  Sign up with Google
+</Button>
+
             </div>
           </form>
         </div>
