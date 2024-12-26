@@ -1,6 +1,6 @@
 'use client'
 import Head from 'next/head'
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import Navbar from '../../_components/navbar'
 import ProductCard from '../../_components/card'
 import { Button } from '~/components/ui/button'
@@ -10,6 +10,7 @@ import { Input } from '~/components/ui/input'
 import { api } from '~/trpc/react'
 import { ICategory, ISubcategory } from '~/server/db/category/category'
 import { Types } from 'mongoose'
+import useCompanyStore from '~/store/general'
 
 interface ProductSize {
   name: string;
@@ -35,17 +36,22 @@ interface Product {
 
 const Page = () => {
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(null);
+  const { companyId } = useCompanyStore();
   const { data: productsData, isLoading } = api.product.getProducts.useQuery({
-    companyId: '674ac8e13644f51bd33ad5a0',
+    companyId:companyId as string,
     page: 1,
     pageSize: 10,
     search: selectedCategory?.name ?? '',
-    status: "active",
+    status: "active"
+  },{
+    enabled: !!companyId && typeof companyId === "string",
   });
 
   const { data: productsByCategory, isLoading: productsByCategoryLoading } = api.product.getProductsByCategory.useQuery({
-    companyId: '674ac8e13644f51bd33ad5a0',
+    companyId:companyId as string ,
     limitPerCategory: 20,
+  },{
+    enabled: !!companyId && typeof companyId === "string",
   });
 
   const filterProductsBySubcategory = (subcategoryId: string) => {

@@ -101,7 +101,7 @@ export default function LoginForm() {
   useEffect(() => {
     if (status !== "loading" && session) {
       const routeName = session.user?.routeName || 'default';
-      router.push(`/${routeName}/dashboard`);
+      router.push(`/co/${routeName}/dashboard`);
     }
   }, [session, status, router]);
 
@@ -186,7 +186,7 @@ export default function LoginForm() {
             </h2>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Or{' '}
-              <Link href="/signup" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400">
+              <Link href="/auth/signup" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400">
                 create a new account
               </Link>
             </p>

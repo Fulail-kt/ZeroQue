@@ -294,7 +294,7 @@ const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
    await signOut({ 
-      callbackUrl: '/login' 
+      callbackUrl: '/auth/login' 
     });
   };
 

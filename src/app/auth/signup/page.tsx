@@ -8,3 +8,4 @@ import SignupPage from '~/app/_components/page/auth/signUpForm'
 }
 
 export default page
+

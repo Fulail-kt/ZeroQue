@@ -13,6 +13,9 @@ export const checkRoute = publicProcedure
 
       const company = await CompanyModel.findOne({routeName: slug})
 
-      return { exists: !!company };
+      return {
+        exists: !!company,
+        companyId: company?._id ?? null,
+      };
     })
 

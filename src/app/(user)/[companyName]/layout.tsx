@@ -120,6 +120,7 @@ import { api, TRPCReactProvider } from "~/trpc/react";
 import { notFound } from "next/navigation";
 import { use, useEffect } from "react";
 import Loading from "~/app/_components/global/loading";
+import useCompanyStore from "~/store/general";
 
 export default function CompanyLayout({
   children,
@@ -128,10 +129,10 @@ export default function CompanyLayout({
   children: React.ReactNode;
   params: Promise<{ companyName: string }>;
 }) {
-  const { companyName: slug } = use(params);
-
-  // Use the slug to check the route with tRPC (with suspense enabled)
-  const { data: slugCheck,isLoading } = api.company.checkRoute.useQuery(
+    const { companyName: slug } = use(params);
+    const setCompanyData = useCompanyStore((state) => state.setCompanyData);
+    
+  const { data: slugCheck,isLoading,isError } = api.company.checkRoute.useQuery(
     { slug },
     { suspense: false }
   );
@@ -144,10 +145,16 @@ export default function CompanyLayout({
     document.body.appendChild(script);
   }, []);
 
-  // Redirect to 404 if slug doesn't exist
-  if (slugCheck && !slugCheck.exists) {
+
+  if (isError || (slugCheck && !slugCheck.exists)) {
     notFound();
   }
+
+  useEffect(() => {
+    if (slugCheck && slugCheck.exists && slugCheck.companyId) {
+      setCompanyData(slugCheck.companyId, slug); 
+    }
+  }, [slugCheck, slug, setCompanyData]);
 
 
   if (isLoading) {

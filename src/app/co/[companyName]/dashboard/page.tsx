@@ -28,6 +28,7 @@ import {
   Pizza, 
   Utensils 
 } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 
 const orderData = [
   { id: '1', customer: 'John Doe', items: 3, total: '$45.99', status: 'Pending' },
@@ -45,6 +46,12 @@ const revenueData = [
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
+
+  const handleLogout = async () => {
+    await signOut({ 
+       callbackUrl: '/auth/login' 
+     });
+   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
@@ -75,6 +82,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
             <TabsTrigger value="menu">Menu</TabsTrigger>
+            <li onClick={handleLogout}>Logout</li>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
 
