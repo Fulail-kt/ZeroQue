@@ -543,7 +543,7 @@ export const verifyUpiPayment = publicProcedure
       return {
         success: input.status === 'SUCCESS',
         order: {
-          id: order._id.toString(),
+          id: "ORD_123_12",
           status: order.status
         }
       };
