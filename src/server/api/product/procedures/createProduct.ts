@@ -111,10 +111,16 @@ const CreateProductSchema = z.object({
   price: z.number().min(0).optional(),
   stock: z.number().min(0).optional()
 }).refine(
-  (data) => (data.sizes && data.sizes.length > 0) ?? data.price !== undefined ?? data.stock !== undefined ,
+  (data) => {
+    // Check if either:
+    // 1. sizes array exists and has items
+    // OR
+    // 2. both price and stock are defined
+    return (data.sizes && data.sizes.length > 0) || (data.price !== undefined && data.stock !== undefined);
+  },
   { 
-    message: "Either sizes or standalone price / stock must be specified",
-    path: ["price",'stock']
+    message: "Either sizes or both price and stock must be specified",
+    path: ["price", "stock"]
   }
 );
 
@@ -124,12 +130,14 @@ export const createProduct = protectedProcedure
   .mutation(async ({ctx, input }) => {
     console.log(input, "input");
 
-    if (ctx.session.user.userRole === "COMPANY") {
+    if (ctx.session.user.userRole !== "COMPANY") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "Only Companies are allowed to create job postings.",
       });
     }
+
+    console.log(ctx,"")
 
     // Check if companyId or companyProfileId is present
     const companyId = ctx.session.user.companyId;

@@ -22,7 +22,7 @@ interface OrderDocument extends Document {
     code?: string;
     discount?: number;
   };
-  status: 'pending' | 'processing' | 'completed' | 'cancelled';
+  status: 'pending' | 'processing' | 'completed' | 'cancelled'|'failed';
   createdAt?: Date;
   updatedAt?: Date;
 }

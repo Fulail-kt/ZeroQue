@@ -225,6 +225,7 @@ import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import { Trash2, Plus, Loader2 } from 'lucide-react';
 import { api } from '~/trpc/react';
+import { useSession } from 'next-auth/react';
 
 // Zod schema for category validation
 const categorySchema = z.object({
@@ -254,6 +255,9 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
   onClose 
 }) => {
   const utils = api.useUtils();
+  const { data: session } = useSession();
+  const companyId:string = session?.user?.companyId ?? '';
+
   
   // Create mutation
   const createCategory = api.product.createCategory.useMutation({
@@ -269,7 +273,7 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
   // Edit mutation
   const updateCategory = api.product.updateCategory.useMutation({
     onSuccess: async () => {
-     await utils.product.getCategories.refetch({ companyId: '674ac8e13644f51bd33ad5a0' });
+     await utils.product.getCategories.refetch({ companyId });
       onClose();
     },
     onError: (error) => {
@@ -287,7 +291,6 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
   });
 
   const onSubmit = (data: z.infer<typeof categorySchema>) => {
-    const companyId = '674ac8e13644f51bd33ad5a0';
     if (action === 'create') {
       createCategory.mutate({ ...data, companyId });
     } else {

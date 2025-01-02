@@ -15,6 +15,7 @@ import { Types } from "mongoose";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "~/components/ui/dialog";
 import ProductDialog from "./productDialog";
 import { CustomAlert } from "../../global/customAlert";
+import { useSession } from "next-auth/react";
 
 interface ProductSize {
   name: string;
@@ -49,10 +50,13 @@ const ProductList: React.FC = () => {
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>("");
   const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
   const utils = api.useUtils()
+  const { data: session } = useSession();
+  const companyId:string=session?.user?.companyId ?? ""
+
 
   // Use the query with search and pagination
   const { data: productsData, isLoading } = api.product.getProducts.useQuery({
-    companyId: '674ac8e13644f51bd33ad5a0',
+    companyId,
     page: currentPage,
     pageSize:6,
     search: debouncedSearchQuery,

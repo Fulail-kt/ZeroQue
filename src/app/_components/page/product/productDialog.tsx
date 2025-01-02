@@ -903,6 +903,7 @@ import { api } from '~/trpc/react'
 import 'react-image-crop/dist/ReactCrop.css'
 import ImageCropper from '../../global/imageCropper'
 import { ICategory } from '~/server/db/category/category'
+import { useSession } from 'next-auth/react'
 
 // Enhanced Product Schema with Subcategory Validation
 const createProductSchema = (categories: ICategory[] | undefined) => {
@@ -1015,6 +1016,10 @@ export const ProductDialog: React.FC<{
     const [images, setImages] = useState<string[]>([]);
     const [showSizes, setShowSizes] = useState<boolean>(false);
 
+  const { data: session } = useSession();
+  const companyId:string = session?.user?.companyId ?? '';
+
+
     // Create mutation
     const createProduct = api.product.createProduct.useMutation({
       onSuccess: async() => {
@@ -1041,7 +1046,7 @@ export const ProductDialog: React.FC<{
     // GET categories
     const { data: categoriesData, isLoading: categoriesLoading } =
       api.product.getCategories.useQuery({
-        companyId: '674ac8e13644f51bd33ad5a0'
+        companyId
       });
 
     // Dynamic schema based on categories
@@ -1109,7 +1114,8 @@ export const ProductDialog: React.FC<{
     const sizes = form.watch('sizes') ?? [];
 
     const onSubmit = (data: z.infer<typeof productSchema>) => {
-      const companyId = '674ac8e13644f51bd33ad5a0';
+
+      console.log(data,"data---")
       const submitData = {
         ...data,
         category: data.category ?? initialData?.category?._id ?? '',
