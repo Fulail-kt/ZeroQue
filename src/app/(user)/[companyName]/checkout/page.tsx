@@ -1028,10 +1028,8 @@ const CheckoutPage: React.FC = () => {
   // Handle UPI Payment
   const handleUPIPayment = (upiUrl: string) => {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
     if (isMobile) {
       window.location.href = upiUrl;
-      
       // setTimeout(() => {
       //   if (upiData?.orderId) {
       //     startPaymentStatusCheck(upiData.orderId);
