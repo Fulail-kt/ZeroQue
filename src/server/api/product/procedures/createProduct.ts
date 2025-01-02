@@ -116,7 +116,7 @@ const CreateProductSchema = z.object({
     // 1. sizes array exists and has items
     // OR
     // 2. both price and stock are defined
-    return (data.sizes && data.sizes.length > 0) || (data.price !== undefined && data.stock !== undefined);
+    return (data.sizes && data.sizes.length > 0) ?? (data.price !== undefined && data.stock !== undefined);
   },
   { 
     message: "Either sizes or both price and stock must be specified",
