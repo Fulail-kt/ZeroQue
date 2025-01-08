@@ -55,7 +55,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className='w-36 md:w-52 relative flex flex-col items-center justify-end h-full'>
           <div className="absolute top-0 overflow-hidden">
             <img
-              src={product.images[0] || '/placeholder-image.jpg'} // Add fallback image
+              src={product.images[0] ?? '/placeholder-image.jpg'} // Add fallback image
               alt={product.title}
               className="md:w-44 md:h-40 size-32 rounded-xl shadow-lg dark:shadow-black/50 mt-2.5 md:mt-0 mb-5"
               height={100}
