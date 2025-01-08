@@ -17,7 +17,7 @@ const Category: React.FC<CategoryProps> = ({ selectedCategory, setSelectedCatego
   const { companyId } = useCompanyStore();
 
   const { data: categoryQueryResult, isLoading, error } = api.product.getCategories.useQuery({
-    companyId: companyId as string,
+    companyId: companyId!,
   }, {
     enabled: !!companyId
   });
@@ -39,7 +39,6 @@ const Category: React.FC<CategoryProps> = ({ selectedCategory, setSelectedCatego
     company: new Types.ObjectId('000000000000000000000000'),
     createdAt: new Date(),
     updatedAt: new Date(),
-    $assertPopulated: () => {},
     $clone: () => ({}),
   } as unknown as ICategory;
 

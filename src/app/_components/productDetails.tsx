@@ -733,7 +733,7 @@ const ProductDetails = ({ productId }: PageProps) => {
     <div className="h-[92vh] md:h-[80vh] bg-gray-50 dark:bg-gray-900 md:dark:bg-transparent md:p-8">
       <div className="max-w-2xl md:w-full md:max-w-full h-full md:h-fit mx-auto p-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-none">
         <div className="flex justify-between w-full px-5 p-2 items-center">
-        <Link href={`/${companyRoute as string}`}>
+        <Link href={`/${companyRoute!}`}>
             <Button variant="ghost" size="icon" className="rounded-full justify-start">
               <ArrowLeft className="h-6 w-6" />
             </Button>

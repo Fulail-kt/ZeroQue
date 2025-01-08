@@ -1075,7 +1075,7 @@ const CheckoutPage: React.FC = () => {
 
   // Check pending orders mutation
   const checkPendingOrders = api.order.checkPendingOrders.useMutation({
-    onSuccess: (data) => {
+    onSuccess: async(data) => {
       if (data.hasPendingOrder && data.pendingOrder) {
         // Set UPI data from existing order and show payment dialog
         console.log("pending",data)
@@ -1098,7 +1098,7 @@ const CheckoutPage: React.FC = () => {
         });
       } else {
         // No pending order, proceed with new order creation
-        createNewOrder(pendingFormData);
+       await createNewOrder(pendingFormData);
       }
     },
     onError: (error) => {
@@ -1188,7 +1188,7 @@ const CheckoutPage: React.FC = () => {
       setIsProcessing(false);
       
       const localOrder = createLocalOrder({
-        companyId: companyId as string,
+        companyId: companyId!,
         name: data.user.name,
         email: data.user.email,
         phone1: data.user.phone,
@@ -1263,7 +1263,7 @@ const CheckoutPage: React.FC = () => {
       try {
         await createOrder.mutateAsync({
           ...formData,
-          companyId: companyId as string,
+          companyId: companyId!,
           total: calculateTotal(),
           paymentMethod,
           items: cart.map(item => ({
@@ -1354,7 +1354,7 @@ const CheckoutPage: React.FC = () => {
     // Check for pending orders first
     const cartItemIds = getCartItemIds();
     await checkPendingOrders.mutateAsync({
-      companyId: companyId as string,
+      companyId: companyId!,
       itemIds: cartItemIds,
       email:data.email,
       date: new Date().toISOString().split('T')[0] ?? "",
@@ -1662,7 +1662,7 @@ const CheckoutPage: React.FC = () => {
               <p>Please complete the payment using your preferred UPI app:</p>
               <ol className="list-decimal ml-4 space-y-1">
                 <li>Open your UPI app</li>
-                <li>Scan the QR code or click "Open UPI App"</li>
+                <li>{`Scan the QR code or click "Open UPI App"`}</li>
                 <li>Complete the payment in your app</li>
                 <li>Wait for confirmation (do not close this window)</li>
               </ol>

@@ -315,10 +315,10 @@ const Navbar: React.FC = () => {
       
       {/* Desktop Navigation */}
       <div className="hidden md:flex items-center space-x-4 ml-8">
-        <Link href={`/${companyRoute as string}`}><Button variant="ghost">Home</Button></Link>
+        <Link href={`/${companyRoute!}`}><Button variant="ghost">Home</Button></Link>
         <Button variant="ghost">Product</Button>
         <Cart />
-       {orders.length>0 && <Link href={`/${companyRoute as string}/orders`}><Button variant="ghost">Order</Button></Link>}
+       {orders.length>0 && <Link href={`/${companyRoute!}/orders`}><Button variant="ghost">Order</Button></Link>}
       </div>
       
       {/* Search and Actions */}
@@ -333,7 +333,7 @@ const Navbar: React.FC = () => {
         </div>
         
         {/* Mobile Search Button */}
-        <Link href={`/${companyRoute as string}`}>
+        <Link href={`/${companyRoute!}`}>
           <Button variant="ghost" className="justify-center md:hidden">
             <Home className="h-5 w-5" />
           </Button>
