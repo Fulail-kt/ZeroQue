@@ -81,6 +81,7 @@ import { Button } from "~/components/ui/button";
 import { Plus } from "lucide-react";
 import Link from 'next/link';
 import { Types } from 'mongoose';
+import useCompanyStore from '~/store/general';
 
 interface ProductSize {
   name: string;
@@ -107,8 +108,9 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const { companyRoute } = useCompanyStore();
   return (
-    <Link href={`/item/${product._id as string}`}>
+    <Link href={`/${companyRoute as string}/item/${product._id as string}`}>
       <Card className="border-none flex justify-center md:h-56 h-48 overflow-hidden transition-all hover:shadow-lg">
         {/* Image Container */}
         <div className='w-36 md:w-52 relative flex flex-col items-center justify-end h-full'>

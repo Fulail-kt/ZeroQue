@@ -164,7 +164,7 @@ import Category from '../../_components/category';
 import { Search } from 'lucide-react';
 import { Input } from '~/components/ui/input';
 import { api } from '~/trpc/react';
-import type { ICategory, ISubcategory } from '~/server/db/category/category';
+import { ICategoryDTO, type ICategory, type ISubcategory } from '~/server/db/category/category';
 import type { Types } from 'mongoose';
 import useCompanyStore from '~/store/general';
 
@@ -196,19 +196,22 @@ interface Product {
 }
 
 const Page = () => {
-  const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<ICategory |null>(null);
   const { companyId } = useCompanyStore();
 
-  const { data: productsData } = api.product.getProducts.useQuery({
-    companyId: companyId!,
-    page: 1,
-    pageSize: 10,
-    search: selectedCategory?.name ?? '',
-    status: "active",
-  }, {
-    enabled: !!companyId,
-  });
-
+  const { data: productsData } = api.product.getProducts.useQuery(
+    {
+      companyId: companyId!,
+      page: 1,
+      pageSize: 10,
+      search: selectedCategory?.name === "All" ? "" : selectedCategory?.name ?? '',
+      status: "active",
+    },
+    {
+      enabled: !!companyId,
+    }
+  );
+  
   const { data: productsByCategory } = api.product.getProductsByCategory.useQuery({
     companyId: companyId!,
     limitPerCategory: 20,
@@ -216,11 +219,15 @@ const Page = () => {
     enabled: !!companyId,
   });
 
+
+  console.log(productsByCategory,"categor")
+
   const filterProductsBySubcategory = (subcategoryId: string) => {
     return productsData?.products.filter(product =>
       product.subcategory?._id.toString() === subcategoryId
     ) ?? [];
   };
+
 
   return (
     <>
@@ -252,7 +259,7 @@ const Page = () => {
             {selectedCategory.subcategories.length > 0 ? (
               <>
                 {selectedCategory.subcategories.map((subCategory: ISubcategory, index: number) => {
-                  const subcategoryProducts = filterProductsBySubcategory(subCategory._id.toString());
+                  const subcategoryProducts = filterProductsBySubcategory(subCategory._id.toString())
 
                   return (
                     subcategoryProducts.length > 0 && (

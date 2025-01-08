@@ -283,14 +283,23 @@ import { Input } from "~/components/ui/input";
 import { 
   Search, 
   Bell,
-  LogOut 
+  LogOut, 
+  Home,
+  Package2,
+  Package
 } from "lucide-react";
 import { ModeToggle } from './darkMode';
 import { Cart } from '~/app/_components/cart'
 import { useSession, signOut } from "next-auth/react";
+import Link from 'next/link';
+import useCompanyStore from '~/store/general';
+import useOrderStore, { Order } from '~/store/orderStore';
 
 const Navbar: React.FC = () => {
   const { data: session } = useSession();
+  const {companyRoute}=useCompanyStore()
+  const orders: Order[] = useOrderStore((state) => state.orders) ?? [];
+
 
   const handleLogout = async () => {
    await signOut({ 
@@ -306,10 +315,10 @@ const Navbar: React.FC = () => {
       
       {/* Desktop Navigation */}
       <div className="hidden md:flex items-center space-x-4 ml-8">
-        <Button variant="ghost">Home</Button>
+        <Link href={`/${companyRoute as string}`}><Button variant="ghost">Home</Button></Link>
         <Button variant="ghost">Product</Button>
-        <Button variant="ghost"></Button>
-        <Button variant="ghost">Cart</Button>
+        <Cart />
+       {orders.length>0 && <Link href={`/${companyRoute as string}/orders`}><Button variant="ghost">Order</Button></Link>}
       </div>
       
       {/* Search and Actions */}
@@ -324,12 +333,14 @@ const Navbar: React.FC = () => {
         </div>
         
         {/* Mobile Search Button */}
-        <Button variant="ghost" className="justify-center md:hidden">
-          <Search className="h-5 w-5" />
-        </Button>
+        <Link href={`/${companyRoute as string}`}>
+          <Button variant="ghost" className="justify-center md:hidden">
+            <Home className="h-5 w-5" />
+          </Button>
+        </Link>
         
         <Button variant="ghost" className="justify-center md:hidden">
-          <Bell className="h-5 w-5" />
+          <Package className="h-5 w-5" />
         </Button>
         
         {/* Logout Button - Desktop and Mobile */}
@@ -345,7 +356,9 @@ const Navbar: React.FC = () => {
         )}
         
         {/* Use the Cart component */}
-        <Cart />
+        <span className='md:hidden '>
+          <Cart />
+        </span>
         
         <ModeToggle/>
       </div>

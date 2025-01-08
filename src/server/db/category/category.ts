@@ -31,6 +31,18 @@ interface ISubcategory {
   updatedAt?: Date;
 }
 
+
+interface ICategoryDTO {
+  _id: string | mongoose.Types.ObjectId;
+  name: string;
+  description?: string;
+  subcategories: ISubcategory[];
+  isActive?: boolean;
+  company: mongoose.Types.ObjectId;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 // Define an interface for the Category
 interface ICategory extends Document {
   name: string;
@@ -61,4 +73,4 @@ const CategorySchema = new Schema<ICategory>({
 const CategoryModel: Model<ICategory> = mongoose.models.Category ?? mongoose.model<ICategory>('Category', CategorySchema);
 
 export default CategoryModel;
-export type { ICategory, ISubcategory };
+export type { ICategory, ISubcategory,ICategoryDTO };

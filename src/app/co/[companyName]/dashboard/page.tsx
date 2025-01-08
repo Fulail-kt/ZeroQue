@@ -54,21 +54,14 @@ export default function AdminDashboard() {
    };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+    <div className="min-h-screen bg-slate-700 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <header className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800 flex items-center">
             <Pizza className="mr-3" /> Food Order Admin
           </h1>
-          <div className="flex items-center space-x-4">
-            <div className="bg-white shadow-sm rounded-full p-2">
-              <Users className="text-gray-600" />
-            </div>
-            <div className="bg-white shadow-sm rounded-full p-2">
-              <LayoutGrid className="text-gray-600" />
-            </div>
-          </div>
+          
         </header>
 
         {/* Tabs Navigation */}
@@ -78,13 +71,13 @@ export default function AdminDashboard() {
           value={activeTab}
           onValueChange={setActiveTab}
         >
-          <TabsList className="grid w-full grid-cols-4 mb-6">
+          {/* <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
             <TabsTrigger value="menu">Menu</TabsTrigger>
             <li onClick={handleLogout}>Logout</li>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          </TabsList>
+          </TabsList> */}
 
           {/* Dashboard Tab */}
           <TabsContent value="dashboard">

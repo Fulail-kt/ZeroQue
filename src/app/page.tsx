@@ -84,24 +84,24 @@ const LandingPage = () => {
                 <div className="container mx-auto flex justify-between items-center p-4">
                     <div className="flex items-center space-x-2">
                         <Image
-                            src='/assets/0q-w.png'
+                            src='/assets/0q-d-rm.png'
                             alt="ZeroQue Logo"
-                            className="w-12 h-7 dark:hidden"
+                            className=" dark:hidden"
                             width={50} height={50}
                         />
 
                         <Image
-                            src='/assets/0q-d.png'
+                            src='/assets/0-q-x.png'
                             alt="ZeroQue Logo"
-                            className="w-12 h-7 hidden dark:block"
+                            className=" hidden dark:block"
                             width={50} height={50}
                         />
                         <h1 className="text-2xl hidden font-bold sm:flex text-primary">{`ZEROQUE`}</h1>
                     </div>
                     <div className="flex items-center space-x-4">
                         <ModeToggle />
-                        <Link href='/login'><Button variant="outline">Login</Button></Link>
-                        <Link href='/signup'><Button>Sign Up</Button></Link>
+                        <Link href='/auth/login'><Button variant="outline">Login</Button></Link>
+                        <Link href='/auth/signup'><Button>Sign Up</Button></Link>
                     </div>
                 </div>
             </header>
@@ -150,16 +150,16 @@ const LandingPage = () => {
         <Image
           width={400}
           height={400}
-          src="/assets/0q-d.png"
+           src='/assets/0-q-x.png'
           alt="ZeroQue App"
-          className="hidden dark:block w-[80%] md:h-52 md:w-72"
+          className="hidden dark:block w-[80%] md:h-56 md:w-56"
         />
         <Image
           width={400}
           height={400}
-          src="/assets/0q-w.png"
+          src='/assets/0q-d-rm.png'
           alt="ZeroQue App"
-          className="dark:hidden w-[80%] md:h-52 md:w-72"
+          className="dark:hidden w-[80%] md:h-56 md:w-56"
         />
       </motion.div>
     </main>

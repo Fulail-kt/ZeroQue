@@ -61,7 +61,7 @@ const ProductList: React.FC = () => {
     pageSize:6,
     search: debouncedSearchQuery,
     status: activeTab,
-  });
+  },{enabled:!!companyId});
 
   const deleteProduct=api.product.deleteProduct.useMutation()
 
@@ -85,7 +85,7 @@ const ProductList: React.FC = () => {
 
     if (searchValue === "") {
       void utils.product.getProducts.refetch({
-        companyId: '674ac8e13644f51bd33ad5a0',
+        companyId,
         page: currentPage,
         search: '',
         status: activeTab === 'active' ? 'active' : 'inactive',
@@ -110,22 +110,6 @@ const ProductList: React.FC = () => {
     setDebouncedSearchQuery('');
     setSearchQuery('');
   };
-
-  // const handleDisable = async (product: Product) => {
-  //   const response = await updateProduct.mutateAsync({
-  //     productId: product._id as string,
-  //     status: 'inactive',
-  //   });
-  //   console.log('Update response:', response);
-  // };
-
-
-  // const handleEnable = async(product: Product) => {
-  //   await updateProduct.mutateAsync({
-  //     productId: product._id as string,
-  //     status: 'active'
-  //   })
-  // };
 
   // const handleDeleteConfirmation=()=>{
 

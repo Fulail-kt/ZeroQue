@@ -175,7 +175,7 @@ export default function CompanyLayout({
         >
           <TRPCReactProvider>
             <Navbar />
-            <div className="w-full md:px-16 h-full md:mt-16 md:mb-0 mb-16">
+            <div className="w-full md:px-16  h-full md:mt-16 md:mb-0 mb-16">
               {children}
             </div>
           </TRPCReactProvider>

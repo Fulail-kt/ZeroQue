@@ -1,0 +1,103 @@
+// utils/payment.ts
+
+import { api } from '~/trpc/react';
+
+export class PaymentManager {
+  private checkStatusInterval: NodeJS.Timeout | null = null;
+  private timeoutInterval: NodeJS.Timeout | null = null;
+
+  constructor(
+    private onStatusUpdate: (status: any) => void,
+    private onError: (error: string) => void,
+    private onExpiry: () => void,
+    private onSuccess: () => void
+  ) {}
+
+  async verifyUPIPayment(params: {
+    orderId: string;
+    refNumber: string;
+    upiTransactionId: string;
+    status: 'SUCCESS' | 'FAILURE' | 'PENDING';
+    errorMessage?: string;
+  }) {
+    try {
+      const verifyPayment = api.order.verifyUpiPayment.useMutation();
+      const result = await verifyPayment.mutateAsync(params);
+      return result;
+    } catch (error) {
+      console.error('Payment verification failed:', error);
+      throw error;
+    }
+  }
+
+  startPaymentStatusCheck(orderId: string, refNumber: string, expiryTime: Date) {
+    const checkPaymentStatus = api.order.checkPaymentStatus.useMutation();
+
+    this.checkStatusInterval = setInterval(async () => {
+      try {
+        const result = await checkPaymentStatus.mutateAsync({
+          refNumber,
+          orderId,
+        });
+
+        this.onStatusUpdate(result);
+
+        if (result.status === 'completed') {
+          this.cleanup();
+          this.onSuccess();
+        } else if (result.status === 'failed') {
+          this.cleanup();
+          this.onError(result.error ?? 'Payment failed');
+        }
+      } catch (error) {
+        console.error('Payment status check failed:', error);
+        this.onError('Failed to check payment status');
+      }
+    }, 3000);
+
+    // Update remaining time
+    this.timeoutInterval = setInterval(() => {
+      const remaining = Math.max(0, Math.floor((new Date(expiryTime).getTime() - Date.now()) / 1000));
+      if (remaining === 0) {
+        this.cleanup();
+        this.onExpiry();
+      }
+    }, 1000);
+  }
+
+  cleanup() {
+    if (this.checkStatusInterval) {
+      clearInterval(this.checkStatusInterval);
+      this.checkStatusInterval = null;
+    }
+    if (this.timeoutInterval) {
+      clearInterval(this.timeoutInterval);
+      this.timeoutInterval = null;
+    }
+  }
+}
+
+export const handleUPICallback = async (params: URLSearchParams) => {
+  const txnId = params.get('txnId');
+  const orderId = params.get('orderId');
+  const refNumber = params.get('refNumber');
+  const status = params.get('Status');
+
+  if (!txnId || !orderId || !refNumber || !status) {
+    throw new Error('Invalid UPI callback parameters');
+  }
+
+  const paymentManager = new PaymentManager(
+    () => {},
+    () => {},
+    () => {},
+    () => {}
+  );
+
+  return await paymentManager.verifyUPIPayment({
+    orderId,
+    refNumber,
+    upiTransactionId: txnId,
+    status: status as 'SUCCESS' | 'FAILURE' | 'PENDING',
+  });
+};

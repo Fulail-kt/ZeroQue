@@ -1,9 +1,15 @@
 
+import { checkPendingOrders } from "../order/checkPending";
 import { createOrder } from "../order/createOrder";
-import { verifyPayment } from "../order/verifyPayment";
+import { getOrders } from "../order/getAllOrders";
+import { checkPaymentStatus } from "../order/verify";
+import { verifyUpiPayment } from "../order/verifyPayment";
 import { createTRPCRouter } from "../trpc";
 
 export const orderRouter=createTRPCRouter({
     createOrder,
-    verifyPayment
+    verifyUpiPayment,
+    checkPaymentStatus,
+    checkPendingOrders,
+    getOrders
 })

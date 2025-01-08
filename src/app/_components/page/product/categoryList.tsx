@@ -25,6 +25,7 @@ import CategoryDialog from './categoryDialog'
 import { api } from '~/trpc/react'
 import { Skeleton } from '~/components/ui/skeleton'
 import { Types } from 'mongoose'
+import { useSession } from 'next-auth/react'
 
 interface ICategory {
     _id: Types.ObjectId;
@@ -47,6 +48,8 @@ const CategoryList: React.FC = () => {
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(null);
+    const { data: session } = useSession();
+    const companyId:string = session?.user?.companyId ?? '';
 
     // Fetch categories
     const {
@@ -54,7 +57,9 @@ const CategoryList: React.FC = () => {
         isLoading,
         error
     } = api.product.getCategories.useQuery({
-        companyId: '674ac8e13644f51bd33ad5a0',
+        companyId,
+    },{enabled: !!companyId
+
     });
 
     // Handle category deletion

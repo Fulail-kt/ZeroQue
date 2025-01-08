@@ -25,10 +25,20 @@ const UpdateProductSchema = z.object({
   price: z.number().min(0).optional(),
   stock: z.number().min(0).optional()
 }).refine(
-  (data) => (data.sizes && data.sizes.length > 0) ?? data.price !== undefined ?? data.stock!==undefined,
+  (data) => {
+    // Skip validation if only status is being updated
+    if (Object.keys(data).length === 2 && data.productId && data.status) {
+      return true;
+    }
+
+    // For other updates, check sizes or price/stock
+    const hasSizes = Array.isArray(data.sizes) && data.sizes.length > 0;
+    const hasPriceAndStock = typeof data.price === 'number' && typeof data.stock === 'number';
+    return hasSizes || hasPriceAndStock;
+  },
   { 
-    message: "Either sizes or standalone price / stock must be specified",
-    path: ["price"]
+    message: "Either sizes or both price and stock must be specified",
+    path: ["price", "stock"]
   }
 );
 

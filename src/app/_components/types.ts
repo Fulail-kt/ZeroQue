@@ -32,3 +32,40 @@ export interface Product {
 export interface ProductCardProps {
   product: Product;
 }
+
+
+
+
+//// payment types
+
+
+export interface PaymentStatus {
+  status: "failed" | "pending" | "completed";
+  lastUpdated: Date;
+  attempts: number;
+  orderStatus: "failed" | "pending" | "completed" | "confirmed" | "preparing" | "ready" | "cancelled";
+  error?: string;
+}
+
+export interface UPIPaymentData {
+  upiUrl: string;
+  orderId: string;
+  qrCode: string;
+  refNumber: string;
+  expiresAt: Date;
+}
+
+export interface CheckoutFormData {
+  name: string;
+  email: string;
+  phone1: string;
+  phone2?: string;
+  tableNumber?: string;
+}
+
+export interface CartItem {
+  id: string;
+  title: string;
+  price: number;
+  quantity: number;
+}

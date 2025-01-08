@@ -11,7 +11,8 @@ const Loading = () => {
             alt="OQ-logo" 
             width={40} 
             height={40} 
-            src="/assets/0q-d.gif" 
+            className='animate-pulse'
+            src="/assets/0-q-x.png" 
             priority // Ensures faster loading for critical images
           />
         </div>
@@ -20,7 +21,8 @@ const Loading = () => {
             alt="OQ-logo" 
             width={40} 
             height={40} 
-            src="/assets/0q-w.gif" 
+            className='animate-pulse'
+            src="/assets/0q-d-rm" 
             priority // Ensures faster loading for critical images
           />
         </div>

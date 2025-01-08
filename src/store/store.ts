@@ -19,11 +19,12 @@ interface CartState {
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
+  getCartItemIds: () => string[];
 }
 
 const useCartStore = create(
   persist<CartState>(
-    (set) => ({
+    (set,get) => ({
       cart: [],
       addToCart: (item) =>
         set((state) => {
@@ -45,6 +46,10 @@ const useCartStore = create(
           cart: state.cart.filter((cartItem) => cartItem.id !== id),
         })),
       clearCart: () => set({ cart: [] }),
+      getCartItemIds: () => {
+        return get().cart.map(item => item.id);
+      },
+      
     }),
     {
       name: "cart-storage",

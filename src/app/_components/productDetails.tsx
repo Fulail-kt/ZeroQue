@@ -567,6 +567,7 @@ import ImageCarousel from './global/imageCarousel';
 import { api } from '~/trpc/react';
 import { Types } from 'mongoose';
 import Link from 'next/link';
+import useCompanyStore from '~/store/general';
 
 type ProductSize = {
   _id: string;
@@ -595,6 +596,8 @@ interface PageProps {
 
 const ProductDetails = ({ productId }: PageProps) => {
   const { addToCart } = useCartStore();
+  const {companyRoute}=useCompanyStore()
+
 
   // Fetch product data
   const { data: productData, isLoading, error } = api.product.getProduct.useQuery({ productId });
@@ -730,7 +733,7 @@ const ProductDetails = ({ productId }: PageProps) => {
     <div className="h-[92vh] md:h-[80vh] bg-gray-50 dark:bg-gray-900 md:dark:bg-transparent md:p-8">
       <div className="max-w-2xl md:w-full md:max-w-full h-full md:h-fit mx-auto p-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-none">
         <div className="flex justify-between w-full px-5 p-2 items-center">
-          <Link href={'/'}>
+        <Link href={`/${companyRoute as string}`}>
             <Button variant="ghost" size="icon" className="rounded-full justify-start">
               <ArrowLeft className="h-6 w-6" />
             </Button>

@@ -23,6 +23,7 @@ import { ThemeProvider } from "~/components/theme-provider"
 import {SessionProvider} from "next-auth/react";
 import Navbar from "~/app/_components/navbar";
 import { requireAuth } from "~/utils/common/authUtils";
+import AdminNavbar from "~/app/_components/admin/adminNavbar";
 
 export default async function CompanyLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 
@@ -41,7 +42,8 @@ export default async function CompanyLayout({ children }: Readonly<{ children: R
           >
             <TRPCReactProvider>
                   {/* <Navbar/> */}
-                  <div className="w-full md:px-16 h-full md:mt-16 md:mb-0 mb-16">{children}</div>
+                  <AdminNavbar/>
+                  <div className="w-full mt-10  h-full">{children}</div>
               </TRPCReactProvider>
           </ThemeProvider>
               </SessionProvider>

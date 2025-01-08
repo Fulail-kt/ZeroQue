@@ -322,12 +322,19 @@ export const Cart: React.FC = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" className="justify-center md:hidden relative">
-          <ShoppingCart className="h-5 w-5" />
+        <Button variant="ghost" className="justify-center relative">
+          <ShoppingCart className="h-5 w-5 md:hidden" />
+          <span className='md:block hidden'>Cart</span>
           {cart.length > 0 && (
-            <span className="absolute -top-2 -right-2 bg-destructive text-white rounded-full px-1.5 py-0.5 text-xs">
+            <>
+            <span className="absolute md:hidden  -top-2 -right-2 bg-destructive text-white rounded-full px-1.5 py-0.5 text-xs">
               {cart.length}
             </span>
+
+            {/* <span className="absolute -top-2 -right-2 bg-destructive text-white rounded-full px-1.5 py-0.5 text-xs">
+              {cart.length}
+            </span> */}
+            </>
           )}
         </Button>
       </SheetTrigger>

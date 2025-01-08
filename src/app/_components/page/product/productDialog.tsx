@@ -1039,7 +1039,7 @@ export const ProductDialog: React.FC<{
         onClose();
       },
       onError: (error) => {
-        console.error(error);
+        console.error(error,"09");
       }
     });
 
