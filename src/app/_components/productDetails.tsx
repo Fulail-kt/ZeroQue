@@ -559,7 +559,7 @@
 
 'use client';
 import React, { useState } from 'react';
-import { ArrowLeft, MinusIcon, PlusIcon, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, MinusIcon, PlusIcon, ShoppingCart, Heart } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { CardTitle, CardContent } from '~/components/ui/card';
 import useCartStore from '~/store/store';
@@ -568,6 +568,9 @@ import { api } from '~/trpc/react';
 import { Types } from 'mongoose';
 import Link from 'next/link';
 import useCompanyStore from '~/store/general';
+import { Badge } from "~/components/ui/badge";
+import { Separator } from "~/components/ui/separator";
+import { motion } from 'framer-motion';
 
 type ProductSize = {
   _id: string;
@@ -726,91 +729,151 @@ const ProductDetails = ({ productId }: PageProps) => {
     setSelectedSize('');
   };
 
-  if (isLoading) return <p>Loading product details...</p>;
-  if (error || !productData) return <p>Failed to load product details.</p>;
+  const StockIndicator = ({ stock }: { stock: number }) => (
+    <div className="flex items-center gap-2">
+      <div className={`w-2 h-2 rounded-full ${stock > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
+      <span className="text-sm text-muted-foreground">
+        {stock > 0 ? `${stock} in stock` : 'Out of stock'}
+      </span>
+    </div>
+  );
+
+  const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.3 }
+  };
+
+  if (isLoading) return (
+    <div className="flex h-screen items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary border-r-2" />
+    </div>
+  );
+  
+  if (error || !productData) return (
+    <div className="flex h-screen items-center justify-center">
+      <p className="text-lg text-red-500">Failed to load product details.</p>
+    </div>
+  );
 
   return (
-    <div className="h-[92vh] md:h-[80vh] bg-gray-50 dark:bg-gray-900 md:dark:bg-transparent md:p-8">
-      <div className="max-w-2xl md:w-full md:max-w-full h-full md:h-fit mx-auto p-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-none">
-        <div className="flex justify-between w-full px-5 p-2 items-center">
-        <Link href={`/${companyRoute!}`}>
-            <Button variant="ghost" size="icon" className="rounded-full justify-start">
-              <ArrowLeft className="h-6 w-6" />
+    <div className=" bg-background">
+      <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        {/* Navigation */}
+        {/* <nav className="flex items-center justify-between mb-8">
+          <Link href={`/${companyRoute!}`}>
+            <Button variant="ghost" size="sm" className="flex items-center gap-2 hover:bg-secondary">
+              <ArrowLeft className="h-4 w-4" />
+              <span>Back to Shop</span>
             </Button>
           </Link>
-          <CardTitle className="text-lg font-semibold">{productData.title}</CardTitle>
-        </div>
+        </nav> */}
 
-        <div className="flex w-full justify-center">
-          <div className="md:grid-cols-2 md:gap-5 md:w-[80%] grid-col-1 grid place-items-center">
-            <div className="relative px-5 md:px-0 w-full h-60 md:h-fit overflow-hidden">
+        {/* Main Content */}
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Image Section */}
+          <motion.div 
+            className="relative rounded-xl overflow-hidden bg-white dark:bg-gray-800 shadow-sm"
+            {...fadeIn}
+          >
+            <div className="h-full">
               <ImageCarousel images={productData.images || []} />
             </div>
-            <CardContent className="p-6 space-y-4 w-full">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h2 className="text-2xl font-bold dark:text-gray-100">{productData.title}</h2>
-                  <p className="text-gray-500 dark:text-gray-400 mt-1">{productData.description}</p>
-                </div>
-                <span className="text-2xl font-bold dark:text-gray-100">
-                  ${getCurrentPrice().toFixed(2)}
-                </span>
-              </div>
+          </motion.div>
 
-              {/* Sizes section - only show if sizes exist */}
-              {productData.sizes?.length > 0 && (
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold dark:text-gray-100">Select type</h3>
-                  <div className="grid overflow-y-auto scrollbar-none grid-flow-col-dense gap-2">
-                    {productData.sizes.map((size) => (
-                      <div
-                        key={size._id}
-                        className={`h-12 flex flex-col justify-center items-center cursor-pointer ${
-                          selectedSize === size._id
-                            ? 'text-white bg-gray-800 rounded dark:bg-blue-800 dark:text-gray-200'
-                            : 'dark:bg-gray-700 border rounded dark:border-none border-gray-300 dark:text-gray-300 flex'
-                        }`}
-                        onClick={() => handleSizeSelect(size._id!)}
-                      >
-                        <span>{size.name}</span>
-                      </div>
-                    ))}
-                  </div>
+          {/* Product Info Section */}
+          <motion.div 
+            className="space-y-6"
+            {...fadeIn}
+          >
+            <div>
+              <div className="flex items-start justify-between mb-1">
+                <div>
+                  <Badge variant="secondary" className="mb-1">
+                    {typeof productData.category === 'object' && 'name' in productData.category 
+                      ? productData.category.name 
+                      : 'Unknown Category'}
+                  </Badge>
+                  <h1 className="text-3xl font-bold tracking-tight">{productData.title}</h1>
                 </div>
-              )}
-               
-              {/* Quantity control - works for both sized and non-sized products */}
-              <div className="flex h-12 justify-between px-3 bg-gray-700 rounded-md items-center">
-                <span
-                  className="text-lg cursor-pointer"
-                  onClick={() => handleQuantityChange('decrement')}
-                >
-                  <MinusIcon className="h-5 w-5" />
-                </span>
-                <p className="text-lg">{quantity}</p>
-                <span
-                  className="text-lg cursor-pointer"
-                  onClick={() => handleQuantityChange('increment')}
-                >
-                  <PlusIcon className="h-5 w-5" />
+                <div className="text-2xl font-bold text-primary">
+                  ${getCurrentPrice().toFixed(2)}
+                </div>
+              </div>
+              <p className="text-muted-foreground leading-relaxed">{productData.description}</p>
+            </div>
+
+            {/* <Separator className='h-[0.8px]'/> */}
+            <div className='w-full bg-gray-400 h-[1px] !my-2 '></div>
+
+            {/* Size/Type Selection */}
+            {productData.sizes?.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium">Select Type</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {productData.sizes.map((size) => (
+                    <Button
+                      key={size._id}
+                      variant={selectedSize === size._id ? "default" : "outline"}
+                      className="h-12"
+                      onClick={() => handleSizeSelect(size._id!)}
+                    >
+                      <span>{size.name}</span>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Quantity Selection */}
+            <div className="">
+              <h3 className="text-lg font-medium mb-2">Quantity</h3>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center justify-between w-full h-12 rounded-md border border-input">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-full rounded-none"
+                    onClick={() => handleQuantityChange('decrement')}
+                    disabled={quantity === 0}
+                  >
+                    <MinusIcon className="h-4 w-4" />
+                  </Button>
+                  <div className="w-16 text-center">
+                    <span className="text-lg font-medium">{quantity}</span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-full rounded-none"
+                    onClick={() => handleQuantityChange('increment')}
+                    disabled={quantity >= (productData.stock ?? 0)}
+                  >
+                    <PlusIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Total and Add to Cart */}
+            <div className="">
+              <div className="flex justify-between items-center">
+                <span className="text-lg font-medium">Total</span>
+                <span className="text-2xl font-bold text-primary">
+                  ${calculateTotalPrice().toFixed(2)}
                 </span>
               </div>
-              
-              <div className="md:relative md:border-0 md:p-0 md:mt-8">
-                <Button
-                  className="w-full h-14 text-lg dark:bg-orange-500"
-                  disabled={
-                    // Disable if sizes exist but none selected, or quantity is 0
-                    (productData.sizes?.length > 0 && !selectedSize) || quantity === 0
-                  }
-                  onClick={handleAddToCart}
-                >
-                  <ShoppingCart className="mr-2 h-5 w-5" />
-                  Add to Cart | ${calculateTotalPrice().toFixed(2)}
-                </Button>
-              </div>
-            </CardContent>
-          </div>
+              <Button
+                className="w-full h-14 text-lg"
+                disabled={(productData.sizes?.length > 0 && !selectedSize) || quantity === 0}
+                onClick={handleAddToCart}
+              >
+                <ShoppingCart className="mr-2 h-5 w-5" />
+                Add to Cart
+              </Button>
+            </div>
+
+          </motion.div>
         </div>
       </div>
     </div>

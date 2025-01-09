@@ -57,8 +57,9 @@ const OrderList: React.FC = () => {
   };
 
   return (
-    <div className='flex justify-center w-full'>
-      <div className="space-y-4 p-4 max-w-6xl w-full">
+    <div className='flex max-w-7xl flex-col items-center justify-center w-full'>
+         <div className="flex h-16 mt-2 justify-between w-full items-center p-4"><h1 className='text-2xl uppercase  font-semibold'>ORDERS</h1></div>
+      <div className="space-y-6 pt-2 p-5  w-full">
         {/* Tabs */}
         <div className="flex gap-4 border-b border-gray-200">
           {(['active', 'inactive'] as const).map((tab) => (
@@ -80,7 +81,7 @@ const OrderList: React.FC = () => {
           placeholder="Search by customer name, email, or phone..."
           value={searchQuery}
           onChange={handleSearch}
-          className="max-w-md"
+          className=" w-full"
         />
         {/* Orders List */}
         <div className="grid gap-3">

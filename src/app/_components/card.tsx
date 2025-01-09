@@ -50,7 +50,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <Link href={`/${companyRoute}/item/${productId}`}>
-      <Card className="border-none flex justify-center md:h-56 h-48 overflow-hidden transition-all hover:shadow-lg">
+      <Card className="border-none bg-transparent flex justify-center md:h-56 h-48 overflow-hidden transition-all hover:shadow-lg">
         {/* Image Container */}
         <div className='w-36 md:w-52 relative flex flex-col items-center justify-end h-full'>
           <div className="absolute top-0 overflow-hidden">
@@ -62,7 +62,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               width={100}
             />
           </div>
-          <CardContent className="p-2 bg-gray-800 h-28 md:h-32 rounded-2xl w-full px-3 flex justify-between items-end">
+          <CardContent className="p-2 bg-gray-800/80 h-28 md:h-32 rounded-2xl w-full px-3 flex justify-between items-end">
             {/* Title */}
             <div className='flex items-center w-full justify-between'>
               <h3 className="text-[12px] tracking-wider md:text-sm font-500 truncate w-2/3">

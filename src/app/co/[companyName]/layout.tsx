@@ -43,7 +43,7 @@ export default async function CompanyLayout({ children }: Readonly<{ children: R
             <TRPCReactProvider>
                   {/* <Navbar/> */}
                   <AdminNavbar/>
-                  <div className="w-full mt-10  h-full">{children}</div>
+                  <div className="w-full mt-14 flex justify-center  h-full">{children}</div>
               </TRPCReactProvider>
           </ThemeProvider>
               </SessionProvider>

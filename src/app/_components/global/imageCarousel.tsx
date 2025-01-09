@@ -34,7 +34,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
                 width={150}
                 height={150}
                 alt={`Product image ${index + 1}`} 
-                className="w-full h-56 md:h-64 object-fil rounded-lg" 
+                className="w-full h-60 lg:h-full lg:max-h-max object-fil rounded-lg" 
               />
             </div>
           </CarouselItem>

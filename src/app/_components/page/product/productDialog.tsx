@@ -1114,8 +1114,6 @@ export const ProductDialog: React.FC<{
     const sizes = form.watch('sizes') ?? [];
 
     const onSubmit = (data: z.infer<typeof productSchema>) => {
-
-      console.log(data,"data---")
       const submitData = {
         ...data,
         category: data.category ?? initialData?.category?._id ?? '',

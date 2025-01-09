@@ -137,8 +137,6 @@ export const updateProduct = publicProcedure
 
         await Promise.all(deletePromises);
       }
-
-      console.log(input,"inp")
       // Populate update data
       if (input.companyId) {
         updateData.company = new mongoose.Types.ObjectId(input.companyId);

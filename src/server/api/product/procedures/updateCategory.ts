@@ -25,7 +25,6 @@ export const updateCategory = publicProcedure
   .input(UpdateCategorySchema)
   .mutation(async ({ input }) => {
     try {
-        console.log("Input:", input)
       // Validate category ID
       if (!mongoose.Types.ObjectId.isValid(input._id)) {
         throw new TRPCError({

@@ -1078,7 +1078,6 @@ const CheckoutPage: React.FC = () => {
     onSuccess: async(data) => {
       if (data.hasPendingOrder && data.pendingOrder) {
         // Set UPI data from existing order and show payment dialog
-        console.log("pending",data)
         const pendingUpiData = {
           upiUrl: data.pendingOrder.upiUrl ?? "",
           orderId: data.pendingOrder.orderId ?? "",

@@ -10,8 +10,6 @@ export async function requireAuth(requiredRole?: 'COMPANY' | 'ADMIN') {
     redirect('/login');
   }
 
-  console.log(session,"hleo-req")
-
   if (requiredRole && session.user.userRole !== requiredRole) {
     redirect('/unauthorized');
   }

@@ -137,8 +137,6 @@ export const createProduct = protectedProcedure
       });
     }
 
-    console.log(ctx,"")
-
     // Check if companyId or companyProfileId is present
     const companyId = ctx.session.user.companyId;
     if (!companyId) {

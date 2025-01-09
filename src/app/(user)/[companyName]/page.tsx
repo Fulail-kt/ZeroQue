@@ -219,9 +219,6 @@ const Page = () => {
     enabled: !!companyId,
   });
 
-
-  console.log(productsByCategory,"categor")
-
   const filterProductsBySubcategory = (subcategoryId: string) => {
     return productsData?.products.filter(product =>
       product.subcategory?._id.toString() === subcategoryId

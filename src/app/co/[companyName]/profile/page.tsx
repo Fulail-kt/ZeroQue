@@ -36,7 +36,7 @@ const ProfilePage = () => {
     setQrState(prev => ({ ...prev, isGenerating: true, error: null }));
     
     try {
-      const url = `localhost:3000/${userData.routeName}`;
+        const url = `https://zeroq.vercel.app/${userData.routeName}`;
       const qrDataUrl = await QRCode.toDataURL(url, {
         width: 200,
         margin: 2,
@@ -94,7 +94,7 @@ const ProfilePage = () => {
     <div className="container mx-auto p-4 space-y-4  overflow-hidden scrollbar-none">
       {/* Header with Theme Toggle */}
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Admin Profile</h1>
+        <h1 className="text-2xl font-bold">Company Profile</h1>
         <ModeToggle />
       </div>
 

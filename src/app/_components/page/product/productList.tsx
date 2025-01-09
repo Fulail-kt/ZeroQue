@@ -65,9 +65,6 @@ const ProductList: React.FC = () => {
 
   const deleteProduct=api.product.deleteProduct.useMutation()
 
-
-  console.log(productsData, "data")
-
   const toggleProductStatusMutation = api.product.updateProduct.useMutation({
     onSuccess: () => {
       void utils.product.getProducts.refetch();
@@ -125,23 +122,23 @@ const ProductList: React.FC = () => {
   const filteredProducts = productsData?.products ?? [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       {/* Tabs */}
-      <div className="flex gap-8 border-b border-gray-200">
+      <div className="flex gap-6 border-b border-gray-200">
         <button
           onClick={() => handleTabChange('active')}
-          className={`px-4 py-2 border-b-2 font-medium transition-colors ${activeTab === 'active'
-              ? 'border-blue-500 text-blue-500'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+          className={`px-4 py-1 border-b-2 font-medium transition-colors ${activeTab === 'active'
+              ? 'border-white text-primary'
+              : 'border-transparent text-gray-400 hover:text-gray-700'
             }`}
         >
           Active
         </button>
         <button
           onClick={() => handleTabChange('inactive')}
-          className={`px-4 py-2 border-b-2 font-medium transition-colors ${activeTab === 'inactive'
-              ? 'border-blue-500 text-blue-500'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+          className={`px-4 py-1 border-b-2 font-medium transition-colors ${activeTab === 'inactive'
+              ? 'border-white text-primary'
+              : 'border-transparent text-gray-400 hover:text-gray-700'
             }`}
         >
           Inactive
@@ -156,7 +153,7 @@ const ProductList: React.FC = () => {
           onChange={handleSearchInputChange}
           className="flex-grow"
         />
-        <Button onClick={handleSearch}>Search</Button>
+        <Button className="flex h-10" onClick={handleSearch}>Search</Button>
       </div>
 
       {/* Loading State */}

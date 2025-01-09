@@ -54,11 +54,11 @@ export default function AdminDashboard() {
    };
 
   return (
-    <div className="min-h-screen bg-slate-700 p-4 md:p-8">
+    <div className="min-h-screen w-full max-w-7xl  p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <header className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 flex items-center">
+          <h1 className="text-3xl font-bold text-primary flex items-center">
             <Pizza className="mr-3" /> Food Order Admin
           </h1>
           
