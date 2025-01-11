@@ -2,6 +2,7 @@ import "~/styles/globals.css";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import { Toaster } from "sonner"
 // import { Inter } from "next/font/google";
 
 export const metadata: Metadata = {
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             >
               <TRPCReactProvider>
                 <div className="">{children}</div></TRPCReactProvider>
+                <Toaster />
             </ThemeProvider>
           </SessionProvider>
         </body>
@@ -37,3 +39,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     </>
   )
 }
+
+
+

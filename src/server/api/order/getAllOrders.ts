@@ -45,7 +45,7 @@ const OrderQuerySchema = z.object({
   page: z.number().min(1).default(1),
   pageSize: z.number().min(1).max(100).default(6),
   search: z.string().optional(),
-  status: z.string().optional().default('pending'),
+  status: z.string().optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional()
 });

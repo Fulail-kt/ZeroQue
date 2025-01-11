@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/u
 import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert';
 import { Button } from '~/components/ui/button';
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
-import type { PaymentStatus, UPIPaymentData } from '../../types';
+import type { PaymentStatus, UPIPaymentData } from '../user/types';
 
 interface PaymentDialogProps {
   open: boolean;

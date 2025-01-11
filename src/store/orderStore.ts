@@ -40,7 +40,7 @@ export interface Order {
   items: OrderItem[];
   total: number;
   payment: PaymentDetails;
-  status: 'pending' | 'confirmed' | 'preparing' | 'ready' | 'completed' | 'cancelled' | 'failed'|'processing';
+  status: 'pending' | 'confirmed' | 'preparing' | 'ready'|'cancelled' ;
   coupon?: Coupon;
   paymentAttempts: number;
   lastPaymentAttempt?: Date;
@@ -210,7 +210,7 @@ const useOrderStore = create(
               ? {
                   ...order,
                   completionTime: new Date(),
-                  status: 'completed',
+                  status: 'ready',
                   updatedAt: new Date()
                 }
               : order
@@ -239,7 +239,7 @@ const useOrderStore = create(
         set((state) => ({
           orders: state.orders.filter((order) => {
             const orderDate = new Date(order.createdAt);
-            if (order.status === 'completed' || order.status === 'cancelled') {
+            if (order.status === 'ready' || order.status === 'cancelled') {
               return orderDate >= cutoffDate;
             }
             return true;

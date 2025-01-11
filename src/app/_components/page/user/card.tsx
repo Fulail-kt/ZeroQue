@@ -52,7 +52,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <Link href={`/${companyRoute}/item/${productId}`}>
       <Card className="border-none bg-transparent flex justify-center md:h-56 h-48 overflow-hidden transition-all hover:shadow-lg">
         {/* Image Container */}
-        <div className='w-36 md:w-52 relative flex flex-col items-center justify-end h-full'>
+        <div className='w-40 md:w-52 relative flex flex-col items-center justify-end h-full'>
           <div className="absolute top-0 overflow-hidden">
             <img
               src={product.images[0] ?? '/placeholder-image.jpg'} // Add fallback image
@@ -62,14 +62,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               width={100}
             />
           </div>
-          <CardContent className="p-2 bg-gray-800/80 h-28 md:h-32 rounded-2xl w-full px-3 flex justify-between items-end">
+          <CardContent className="p-2 bg-gray-800/80 h-28 md:h-32  rounded-2xl px-3 w-full  flex justify-between items-end">
             {/* Title */}
             <div className='flex items-center w-full justify-between'>
               <h3 className="text-[12px] tracking-wider md:text-sm font-500 truncate w-2/3">
                 {product.title}
               </h3>
-              <div className="font-500 rounded-3xl flex items-center justify-center bg-gray-500 dark:bg-black/50 p-2 w-12 text-[10px] md:text-sm">
-                ${displayPrice}
+              <div className="font-500 rounded-3xl flex items-center justify-center bg-gray-500 dark:bg-black/50 p-1 md:p-2 w-10 md:w-12 text-[10px] md:text-sm">
+                ₹ {displayPrice}
               </div>
             </div>
           </CardContent>

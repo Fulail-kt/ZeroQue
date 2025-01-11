@@ -4,9 +4,9 @@ import { TRPCClientError } from '@trpc/client';
 import React from 'react'
 import { ICategory, ICategoryDTO } from '~/server/db/category/category';
 import { api } from '~/trpc/react'
-import Loading from './global/loading';
 import useCompanyStore from '~/store/general';
 import { Types } from 'mongoose';
+import Loading from '../../global/loading';
 
 interface CategoryProps {
   selectedCategory: ICategory | ICategoryDTO|null;

@@ -1,24 +1,3 @@
-// import mongoose from "mongoose";
-// const { Schema } = mongoose;
-
-// // Define the subcategory schema
-// const SubcategorySchema = new Schema({
-//   name: { type: String, required: true },
-//   description: { type: String },
-// }, { timestamps: true });
-
-// // Define the category schema, embedding the subcategories
-// const CategorySchema = new Schema({
-//   name: { type: String, required: true },
-//   description: { type: String },
-//   subcategories: [SubcategorySchema],
-//   isActive: { type: Boolean, default: true }, 
-// }, { timestamps: true });
-
-// // Create the model
-// const CategoryModel= mongoose.models.Category || mongoose.model('Category', CategorySchema);
-// export default CategoryModel;
-
 
 import mongoose, { Document, Model, Schema, Types } from "mongoose";
 

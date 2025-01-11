@@ -26,26 +26,26 @@ const AdminNavbar = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-4 ml-8">
-          <Link href={`/co/${routeName}/dashboard`}>
+          <Link href={`/co/dashboard`}>
             <Button
               variant="ghost"
-              className={isActive(`/co/${routeName}/dashboard`) ? 'text-primary' : ''}
+              className={isActive(`/co/dashboard`) ? 'text-primary' : ''}
             >
               Dashboard
             </Button>
           </Link>
-          <Link href={`/co/${routeName}/products`}>
+          <Link href={`/co/products`}>
             <Button
               variant="ghost"
-              className={isActive(`/co/${routeName}/products`) ? 'text-primary' : ''}
+              className={isActive(`/co/products`) ? 'text-primary' : ''}
             >
               Products
             </Button>
           </Link>
-          <Link href={`/co/${routeName}/orders`}>
+          <Link href={`/co/orders`}>
             <Button
               variant="ghost"
-              className={isActive(`/co/${routeName}/orders`) ? 'text-primary' : ''}
+              className={isActive(`/co/orders`) ? 'text-primary' : ''}
             >
               Orders
             </Button>
@@ -55,44 +55,44 @@ const AdminNavbar = () => {
         {/* Actions Section */}
         <div className="md:ml-auto w-full md:w-fit flex justify-between items-center">
           {/* Mobile Navigation */}
-          <Link href={`/co/${routeName}/dashboard`}>
+          <Link href={`/co/dashboard`}>
             <Button
               variant="ghost"
               className={`justify-center md:hidden ${
-                isActive(`/co/${routeName}/dashboard`) ? 'bg-primary' : ''
+                isActive(`/co/dashboard`) ? 'bg-primary' : ''
               }`}
             >
               <LayoutDashboard className="h-5 w-5" />
             </Button>
           </Link>
 
-          <Link href={`/co/${routeName}/products`}>
+          <Link href={`/co/products`}>
             <Button
               variant="ghost"
               className={`justify-center md:hidden ${
-                isActive(`/co/${routeName}/products`) ? 'bg-primary' : ''
+                isActive(`/co/products`) ? 'bg-primary' : ''
               }`}
             >
               <Package2 className="h-5 w-5" />
             </Button>
           </Link>
 
-          <Link href={`/co/${routeName}/orders`}>
+          <Link href={`/co/orders`}>
             <Button
               variant="ghost"
               className={`justify-center md:hidden ${
-                isActive(`/co/${routeName}/orders`) ? 'bg-primary' : ''
+                isActive(`/co/orders`) ? 'bg-primary' : ''
               }`}
             >
               <ShoppingCart className="h-5 w-5" />
             </Button>
           </Link>
 
-          <Link href={`/co/${routeName}/profile`}>
+          <Link href={`/co/profile`}>
             <Button
               variant="ghost"
               className={`justify-center ${
-                isActive(`/co/${routeName}/profile`) ? 'text-primary md:text-white md:bg-primary' : ''
+                isActive(`/co/profile`) ? 'text-primary md:text-white md:bg-primary' : ''
               }`}
             >
               <UserCircle className="h-5 w-5" />

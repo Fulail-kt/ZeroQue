@@ -1,102 +1,3 @@
-// import mongoose, { Document, Model } from 'mongoose';
-
-// // Define the TypeScript interface for the Order document
-// interface OrderDocument extends Document {
-//     _id:mongoose.Schema.Types.ObjectId,
-//   userId?: mongoose.Schema.Types.ObjectId;
-//   name: string;
-//   email: string;
-//   phone1: string;
-//   phone2?: string;
-//   tableNumber?: string;
-//   items: {
-//     id: string;
-//     title: string;
-//     price: number;
-//     quantity: number;
-//   }[];
-//   total: number;
-//   paymentMethod: 'cash' | 'online';
-//   payment: {
-//     method: {
-//       type: String,
-//       required: true,
-//       enum: ['cash', 'online'],
-//     },
-//     status: {
-//       type: String,
-//       required: true,
-//       enum: ['pending', 'completed', 'failed'],
-//       default: 'pending',
-//     },
-//     transactionId: String,
-//     upiId: String,
-//     refNumber: String,
-//     attempts: {
-//       type: Number,
-//       default: 0,
-//     },
-//     lastAttempt: {
-//       type: Date,
-//     },
-//     error: String,
-//     // metadata: {
-//     //   type: Map,
-//     //   of: Schema.Types.Mixed,
-//     // },
-//   },
-//   transactionId: string;
-//   coupon?: {
-//     code?: string;
-//     discount?: number;
-//   }
-//   status: 'pending' | 'processing' | 'completed' | 'cancelled'|'failed';
-//   createdAt?: Date;
-//   updatedAt?: Date;
-//   preparationStartTime: Date,
-//   completionTime: Date,
-//   estimatedTime: Number,
-// }
-
-// // Define the model type
-// export type OrderModelType = Model<OrderDocument>;
-
-// // Define the schema
-// const OrderSchema = new mongoose.Schema<OrderDocument>({
-//   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-//   name: { type: String, required: true },
-//   email: { type: String, required: true },
-//   phone1: { type: String, required: true },
-//   phone2: { type: String, required: false },
-//   tableNumber: { type: String, required: false },
-//   items: [
-//     {
-//       id: { type: String, required: true },
-//       title: { type: String, required: true },
-//       price: { type: Number, required: true },
-//       quantity: { type: Number, required: true },
-//     },
-//   ],
-//   total: { type: Number, required: true },
-//   paymentMethod: { type: String, enum: ['cash', 'online'], required: true },
-//   transactionId: { type: String, required: true },
-//   coupon: {
-//     code: { type: String },
-//     discount: { type: Number, default: 0 },
-//   },
-//   status: {
-//     type: String,
-//     enum: ['pending', 'processing', 'completed', 'cancelled'],
-//     default: 'pending',
-//   },
-//   createdAt: { type: Date, default: Date.now },
-//   updatedAt: { type: Date, default: Date.now },
-// });
-
-// // Export the model
-// export const OrderModel: OrderModelType =
-//   mongoose.models.Order ?? mongoose.model<OrderDocument, OrderModelType>('Order', OrderSchema);
-
 import mongoose, { Document, Model, Schema, Types } from 'mongoose';
 
 interface OrderDocument extends Document {
@@ -129,7 +30,7 @@ interface OrderDocument extends Document {
     upiUrl?: string;
     
   };
-  status: 'pending' | 'confirmed' | 'preparing' | 'ready' | 'completed' | 'cancelled'|'failed';
+  status: 'pending' |'confirmed'| 'preparing' | 'ready'|"cancelled" ;
   coupon?: {
     code?: string;
     discount?: number;
@@ -182,7 +83,7 @@ const OrderSchema = new Schema<OrderDocument, OrderModelType>(
     },
     status: {
       type: String,
-      enum: ['pending', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled','failed'],
+      enum: ['pending', 'confirmed', 'preparing', 'ready',"cancelled"],
       default: 'pending',
       required: true,
     },

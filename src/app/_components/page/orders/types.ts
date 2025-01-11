@@ -33,7 +33,7 @@ export interface Order {
   items: OrderItem[];
   total: number;
   payment: PaymentDetails;
-  status: 'pending' | 'confirmed' | 'preparing' | 'ready' | 'completed' | 'cancelled' | 'failed';
+  status: 'pending' | 'confirmed' | 'preparing' | 'ready' | 'cancelled' | 'failed';
   coupon?: {
     code?: string;
     discount?: number;

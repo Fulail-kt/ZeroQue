@@ -1,494 +1,4 @@
-// import { type DefaultSession, type NextAuthConfig } from "next-auth";
-// import GoogleProvider from "next-auth/providers/google";
-// import { env } from "../../env";
 
-
-// /**
-//  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
-//  * object and keep type safety.
-//  *
-//  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
-//  */
-// declare module "next-auth" {
-//   interface Session extends DefaultSession {
-//     user: {
-//       id: string;
-//       // ...other properties
-//       // role: UserRole;
-//     } & DefaultSession["user"];
-//   }
-
-//   // interface User {
-//   //   // ...other properties
-//   //   // role: UserRole;
-//   // }
-// }
-
-// /**
-//  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
-//  *
-//  * @see https://next-auth.js.org/configuration/options
-//  */
-// export const authConfig = {
-//   providers: [
-//     GoogleProvider({
-//       clientId: env.AUTH_GOOGLE_ID ?? "",
-//       clientSecret: env.AUTH_GOOGLE_SECRET ?? "",
-//     }),
-//     /**
-//      * ...add more providers here.
-//      *
-//      * Most other providers require a bit more work than the GOOGLE provider. For example, the
-//      * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-//      * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-//      *
-//      * @see https://next-auth.js.org/providers/github
-//      */
-//   ],
-//   callbacks: {
-//     session: ({ session, token }) => ({
-//       ...session,
-//       user: {
-//         ...session.user,
-//         id: token.sub,
-//       },
-//     }),
-//   },
-// } satisfies NextAuthConfig;
-
-// import GoogleProvider from "next-auth/providers/google";
-// import CredentialsProvider from "next-auth/providers/credentials";
-// import { env } from "../../env";
-// import { CompanyModel as User, ICompany } from "../db/company/company";
-// import { type DefaultSession, type NextAuthConfig } from "next-auth";
-// import { compare } from "bcryptjs";
-// import dbConnect from "../db";
-// import { MongoDBAdapter } from "@auth/mongodb-adapter";
-
-// // Extend default session types
-// declare module "next-auth" {
-//   interface Session extends DefaultSession {
-//     user: {
-//       id: string;
-//       companyId?: string;
-//       userRole?: string;
-//       companyProfileId?: string;
-//     } & DefaultSession["user"];
-//   }
-  
-//   interface User {
-//     _id: string;
-//     companyId?: string;
-//     userRole?: string;
-//     companyProfileId?: string;
-//   }
-// }
-
-// export const authConfig = {
-//   providers: [
-//     GoogleProvider({
-//       clientId: env.AUTH_GOOGLE_ID ?? "",
-//       clientSecret: env.AUTH_GOOGLE_SECRET ?? "",
-//     }),
-//   ],
-//   callbacks: {
-//     async jwt({ token, user }) {
-//       if (user) {
-//         token.id = user.id;
-//         token.companyId = user.companyId;
-//         token.email = user.email;
-//       }
-//       return token;
-//     },
-//     async session({ session, token }) {
-//       if (session.user) {
-//         session.user.id = token.id as string;
-//         session.user.companyId = token.companyId as string;
-//         session.user.email = token.email as string;
-//       }
-//       return session;
-//     },
-//   },
-//   session: {
-//     strategy: "jwt",
-//   },
-// } satisfies NextAuthConfig;
-
-// // In your server component or route handler
-// export async function getSession() {
-//   const { auth } = await import("~/server/auth");
-//   return await auth();
-// }
-
-
-// import GoogleProvider from "next-auth/providers/google";
-// import { env } from "../../env";
-// import { CompanyModel as User, ICompany } from "../db/company/company";
-// import { type DefaultSession, type NextAuthConfig } from "next-auth";
-// import dbConnect from "../db";
-
-// // Extend default session types
-// declare module "next-auth" {
-//   interface Session extends DefaultSession {
-//     user: {
-//       id: string;
-//       companyId: string;
-//       userRole?: string;
-//       companyProfileId?: string;
-//     } & DefaultSession["user"];
-//   }
-  
-//   interface User {
-//     _id: string;
-//     companyId: string;
-//     userRole?: string;
-//     companyProfileId?: string;
-//   }
-// }
-
-// export const authConfig = {
-//   providers: [
-//     GoogleProvider({
-//       clientId: env.AUTH_GOOGLE_ID ?? "",
-//       clientSecret: env.AUTH_GOOGLE_SECRET ?? "",
-//     }),
-//   ],
-//   callbacks: {
-//     async signIn({ user, account, profile }) {
-//       // Ensure database connection
-//       await dbConnect();
-
-//       try {
-//         // Check if user already exists
-//         let existingUser = await User.findOne({ 
-//           email: user.email,
-//           $or: [
-//             { googleId: account?.providerAccountId },
-//             { email: user.email }
-//           ]
-//         });
-
-//         // If user doesn't exist, create new user
-//         if (!existingUser) {
-//           // Prepare user data with optional fields
-//           const userData: Partial<ICompany> = {
-//             name: user.name || profile?.name || 'Google User',
-//             email: user.email || profile?.email!,
-//             profile: user.image || profile?.picture!,
-//             googleId: account?.providerAccountId,
-//             authProvider: 'google',
-//             userRole: 'user', 
-//           };
-
-//           // Remove undefined values
-//           Object.keys(userData).forEach(key => 
-//             userData[key as keyof typeof userData] === undefined && 
-//             delete userData[key as keyof typeof userData]
-//           );
-
-//           existingUser = new User(userData);
-
-//           // Validate and save with try-catch to handle specific validation errors
-//           try {
-//             await existingUser.save();
-//           } catch (validationError) {
-//             console.error("Validation Error:", validationError);
-            
-//             // Log specific validation errors
-//             if (validationError instanceof Error && 'errors' in validationError) {
-//               const errors = (validationError as any).errors;
-//               Object.keys(errors).forEach(key => {
-//                 console.error(`${key}: ${errors[key].message}`);
-//               });
-//             }
-            
-//             // Optionally, you can modify the user data to meet validation requirements
-//             throw new Error("User creation failed due to validation error");
-//           }
-//         } else {
-//           // Update existing user with latest information
-//           existingUser.name = user.name || existingUser.name;
-//           existingUser.profile = user.image || existingUser.profile;
-          
-//           // Only update googleId if not already set
-//           if (!existingUser.googleId) {
-//             existingUser.googleId = account?.providerAccountId;
-//             existingUser.authProvider = 'google';
-//           }
-
-//           await existingUser.save();
-//         }
-
-//         return true;
-//       } catch (error) {
-//         console.error("Google OAuth Sign In Error:", error);
-        
-//         // More detailed error logging
-//         if (error instanceof Error) {
-//           console.error("Error Name:", error.name);
-//           console.error("Error Message:", error.message);
-          
-//           // If it's a mongoose validation error, log detailed validation errors
-//           if (error.name === 'ValidationError') {
-//             const validationError = error as any;
-//             Object.keys(validationError.errors).forEach(key => {
-//               console.error(`Validation Error for ${key}:`, validationError.errors[key].message);
-//             });
-//           }
-//         }
-        
-//         return false;
-//       }
-//     },
-//     async jwt({ token, user, account }) {
-//       // If it's a new sign-in, add user details to the token
-//       if (user) {
-//         token.id = user.id;
-//         token.email = user.email;
-//         token.name = user.name;
-//         token.image = user.image;
-//       }
-
-//       return token;
-//     },
-//     async session({ session, token }) {
-//       if (session.user) {
-//         session.user.id = token.id as string;
-//         session.user.email = token.email as string;
-//         session.user.name = token.name as string;
-//         session.user.image = token.image as string;
-//       }
-//       return session;
-//     },
-//   },
-//   session: {
-//     strategy: "jwt",
-//   },
-//   pages: {
-//     error: '/auth/error', // Custom error page
-//   },
-// } satisfies NextAuthConfig;
-
-// // In your server component or route handler
-// export async function getSession() {
-//   const { auth } = await import("~/server/auth");
-//   return await auth();
-// }
-
-
-
-// import GoogleProvider from "next-auth/providers/google";
-// import { env } from "../../env";
-// import { CompanyModel as User, ICompany } from "../db/company/company";
-// import { type DefaultSession, type NextAuthConfig } from "next-auth";
-// import dbConnect from "../db";
-// import { randomBytes } from "crypto";
-
-// // Extend default session types
-// declare module "next-auth" {
-//   interface Session extends DefaultSession {
-//     user: {
-//       id: string;
-//       companyId: string;
-//       userRole?: string;
-//       companyProfileId?: string;
-//     routeName:string;
-//     } & DefaultSession["user"];
-//   }
-  
-//   interface User {
-//     _id: string;
-//     companyId: string;
-//     userRole?: string;
-//     companyProfileId?: string;
-//     routeName:string;
-//   }
-// }
-
-// // Function to generate a unique route name
-// async function generateUniqueRouteName(originalName: string): Promise<string> {
-//   // Replace spaces with hyphens and convert to lowercase
-//   let baseRouteName = originalName.toLowerCase().replace(/\s+/g, '-');
-  
-//   // Check if the route name already exists in any company
-//   const existingRouteName = await User.findOne({ routeName: baseRouteName });
-  
-//   // If route name doesn't exist in any company, return the base route name
-//   if (!existingRouteName) {
-//     return baseRouteName;
-//   }
-  
-//   // If route name exists, add a random number to make it unique
-//   let uniqueRouteName = `${baseRouteName}-${randomBytes(2).toString('hex')}`;
-  
-//   // Ensure the new unique route name is also not taken
-//   while (await User.findOne({ routeName: uniqueRouteName })) {
-//     uniqueRouteName = `${baseRouteName}-${randomBytes(2).toString('hex')}`;
-//   }
-  
-//   return uniqueRouteName;
-// }
-
-
-// export const authConfig = {
-//   providers: [
-//     GoogleProvider({
-//       clientId: env.AUTH_GOOGLE_ID ?? "",
-//       clientSecret: env.AUTH_GOOGLE_SECRET ?? "",
-//     }),
-//   ],
-//   callbacks: {
-//     async signIn({ user, account, profile }) {
-//       // Ensure database connection
-//       await dbConnect();
-
-//       try {
-//         // Check if user already exists
-//         let existingUser = await User.findOne({ 
-//           email: user.email,
-//           $or: [
-//             { googleId: account?.providerAccountId },
-//             { email: user.email }
-//           ]
-//         });
-
-//         // If user doesn't exist, create new user
-//         if (!existingUser) {
-
-//           const initialRouteName = (user.name || profile?.name || 'google-user')
-//           .toLowerCase()
-//           .replace(/\s+/g, '-');
-
-//         // Generate a unique route name
-//         const uniqueRouteName = await generateUniqueRouteName(initialRouteName);
-
-//           // Prepare user data with optional fields
-//           const userData: Partial<ICompany> = {
-//             name: user.name || profile?.name || 'Google User',
-//             email: user.email || profile?.email!,
-//             profile: user.image || profile?.picture!,
-//             googleId: account?.providerAccountId,
-//             authProvider: 'google',
-//             userRole: 'COMPANY', 
-//             routeName:uniqueRouteName,
-//             isVerified:profile?.email_verified ?? false
-//           };
-
-//           // Remove undefined values
-//           Object.keys(userData).forEach(key => 
-//             userData[key as keyof typeof userData] === undefined && 
-//             delete userData[key as keyof typeof userData]
-//           );
-
-//           existingUser = new User(userData);
-
-//           // Validate and save with try-catch to handle specific validation errors
-//           try {
-//             await existingUser.save();
-//           } catch (validationError) {
-//             console.error("Validation Error:", validationError);
-            
-//             // Log specific validation errors
-//             if (validationError instanceof Error && 'errors' in validationError) {
-//               const errors = (validationError as any).errors;
-//               Object.keys(errors).forEach(key => {
-//                 console.error(`${key}: ${errors[key].message}`);
-//               });
-//             }
-            
-//             // Optionally, you can modify the user data to meet validation requirements
-//             throw new Error("User creation failed due to validation error");
-//           }
-//         } else {
-//           // Update existing user with latest information
-//           existingUser.name = user.name || existingUser.name;
-//           existingUser.profile = user.image || existingUser.profile;
-          
-//           // Only update googleId if not already set
-//           if (!existingUser.googleId) {
-//             existingUser.googleId = account?.providerAccountId;
-//             existingUser.authProvider = 'google';
-//           }
-
-//           await existingUser.save();
-//         }
-
-//         return true;
-//       } catch (error) {
-//         console.error("Google OAuth Sign In Error:", error);
-        
-//         // More detailed error logging
-//         if (error instanceof Error) {
-//           console.error("Error Name:", error.name);
-//           console.error("Error Message:", error.message);
-          
-//           // If it's a mongoose validation error, log detailed validation errors
-//           if (error.name === 'ValidationError') {
-//             const validationError = error as any;
-//             Object.keys(validationError.errors).forEach(key => {
-//               console.error(`Validation Error for ${key}:`, validationError.errors[key].message);
-//             });
-//           }
-//         }
-        
-//         return false;
-//       }
-//     },
-//     async jwt({ token, user, account }) {
-//       // If it's a new sign-in, add user details to the token
-//       if (user) {
-//         // Find the user in the database to get the companyId
-//         const dbUser = await User.findOne({ 
-//           email: user.email,
-//           $or: [
-//             { googleId: account?.providerAccountId },
-//             { email: user.email }
-//           ]
-//         });
-
-//         token.id = user.id || dbUser?._id;
-//         token.companyId = dbUser?._id;
-//         token.email = user.email;
-//         token.name = user.name;
-//         token.image = user.image;
-//         token.userRole = dbUser?.userRole;
-//         token.routeName = dbUser?.routeName; 
-//       }
-
-//       return token;
-//     },
-//     async session({ session, token }) {
-//       if (session.user) {
-//         session.user.id = token.id as string;
-//         session.user.companyId = token.companyId as string;
-//         session.user.routeName = token.routeName as string; 
-//         session.user.email = token.email as string;
-//         session.user.name = token.name as string;
-//         session.user.image = token.image as string;
-//         session.user.userRole = token.userRole as string;
-//       }
-//       return session;
-//     },
-//   },
-//   session: {
-//     strategy: "jwt",
-//   },
-//   pages: {
-//     error: '/auth/error', // Custom error page
-//   },
-// } satisfies NextAuthConfig;
-
-// // In your server component or route handler
-// export async function getSession() {
-//   const { auth } = await import("~/server/auth");
-//   return await auth();
-// }
-
-
-
-
-// typescript
-// File: src/server/auth.ts
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { env } from "../../env";
@@ -516,8 +26,11 @@ declare module "next-auth" {
       userRole: ICompany['userRole'];
       companyProfileId?: string;
       routeName: string;
+      onBoarding: boolean; 
     } & DefaultSession["user"];
   }
+
+  
   
   interface User {
     _id?: string;
@@ -525,6 +38,20 @@ declare module "next-auth" {
     userRole?: ICompany['userRole'];
     companyProfileId?: string;
     routeName?: string;
+    onBoarding:boolean;
+  }
+}
+
+interface SessionWithUser extends DefaultSession {
+  user: {
+    id: string;
+    companyId: string;
+    userRole: ICompany['userRole'];
+    routeName: string;
+    onBoarding: boolean;
+    email: string;
+    name?: string;
+    image?: string;
   }
 }
 
@@ -546,6 +73,7 @@ declare module "next-auth/jwt" {
     image?: string;
     userRole?: ICompany['userRole'];
     routeName?: string;
+    onBoarding:boolean;
   }
 }
 
@@ -589,7 +117,8 @@ export const authConfig = {
           id: profile.sub,
           name: profile.name,
           email: profile.email,
-          image: profile.picture
+          image: profile.picture,
+          onBoarding: false 
         };
       }
     }),
@@ -635,6 +164,7 @@ export const authConfig = {
           name: user.name,
           userRole: user.userRole,
           routeName: user.routeName,
+          onBoarding: user.onBoarding 
         };
       }
       
@@ -690,7 +220,8 @@ export const authConfig = {
               authProvider: 'google',
               userRole: 'COMPANY', 
               routeName: uniqueRouteName,
-              isVerified: profile.email_verified ?? false
+              isVerified: profile.email_verified ?? false,
+              onBoarding: false 
             };
 
             // Remove any undefined values
@@ -733,16 +264,26 @@ export const authConfig = {
         return false;
       }
     },
+
+    
     
     async jwt({ 
       token, 
       user, 
-      account 
+      account,
+      trigger,
+      session,
     }: { 
       token: JWT; 
       user?: NextAuthUser; 
-      account?: NextAuthAccount | null 
+      account?: NextAuthAccount | null ,
+      trigger?: "signIn" | "signUp" | "update";
+      session?: SessionWithUser;
     }) {
+
+      if (trigger === "update" && session?.user) {
+        return {...token, ...session.user}
+      }
       // If it's a new sign-in, add user details to the token
       if (user && account) {
         // Find the user in the database to get the most up-to-date information
@@ -761,6 +302,7 @@ export const authConfig = {
           token.image = dbUser.profile;
           token.userRole = dbUser.userRole;
           token.routeName = dbUser.routeName;
+          token.onBoarding=dbUser.onBoarding;
         }
       }
 
@@ -783,6 +325,7 @@ export const authConfig = {
         session.user.name = token.name;
         session.user.image = token.image;
         session.user.userRole = token.userRole;
+        session.user.onBoarding=token.onBoarding;
       }
       return session;
     },
