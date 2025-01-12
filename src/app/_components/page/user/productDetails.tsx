@@ -238,7 +238,7 @@ const ProductDetails = ({ productId }: PageProps) => {
                   <h1 className="text-3xl font-bold tracking-tight">{productData.title}</h1>
                 </div>
                 <div className="text-2xl font-bold text-primary">
-                  ${getCurrentPrice().toFixed(2)}
+                  ₹ {getCurrentPrice().toFixed(2)}
                 </div>
               </div>
               <p className="text-muted-foreground leading-relaxed">{productData.description}</p>
@@ -301,7 +301,7 @@ const ProductDetails = ({ productId }: PageProps) => {
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">Total</span>
                 <span className="text-2xl font-bold text-primary">
-                  ${calculateTotalPrice().toFixed(2)}
+                  ₹ {calculateTotalPrice().toFixed(2)}
                 </span>
               </div>
               <Button

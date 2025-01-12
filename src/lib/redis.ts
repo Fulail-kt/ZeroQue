@@ -10,12 +10,25 @@ const PaymentStatusSchema = z.object({
     timestamp: z.string().optional()
 });
 
+
+
 type PaymentStatus = z.infer<typeof PaymentStatusSchema>;
 
 // Helper type for the raw stored data
 type StoredPaymentStatus = Omit<PaymentStatus, 'lastUpdated'> & {
     lastUpdated: string;
 };
+
+type PaymentStatusType = {
+    status: 'pending' | 'completed' | 'failed';
+    lastUpdated: Date;
+    attempts: number;
+    orderId: string;
+    sellerId: string;
+    amount: number;
+    expiresAt: Date;
+    error?: string;
+  };
 
 const REDIS_CONFIG = {
     host: process.env.REDIS_HOST ?? 'localhost',
@@ -44,41 +57,80 @@ redis.on('connect', () => {
 });
 
 export const PaymentStore = {
-    async setPaymentStatus(refNumber: string, status: PaymentStatus): Promise<void> {
-        try {//
-            // Convert Date to string for storage
-            const storedStatus: StoredPaymentStatus = {
-                ...status,
-                lastUpdated: status.lastUpdated.toISOString()
-            };
+    // async setPaymentStatus(refNumber: string, status: PaymentStatus): Promise<void> {
+    //     try {//
+    //         // Convert Date to string for storage
+    //         const storedStatus: StoredPaymentStatus = {
+    //             ...status,
+    //             lastUpdated: status.lastUpdated.toISOString()
+    //         };
 
-            await redis.setex(
-                `payment:${refNumber}`,
-                1800,
-                JSON.stringify(storedStatus)
-            );
-        } catch (error) {
-            console.error(`Failed to set payment status for ${refNumber}:`, error);
-            throw error;
-        }
-    },
+    //         await redis.setex(
+    //             `payment:${refNumber}`,
+    //             1800,
+    //             JSON.stringify(storedStatus)
+    //         );
+    //     } catch (error) {
+    //         console.error(`Failed to set payment status for ${refNumber}:`, error);
+    //         throw error;
+    //     }
+    // },
 
-    async getPaymentStatus(refNumber: string): Promise<PaymentStatus | null> {
+    async setPaymentStatus(refNumber: string, status: PaymentStatusType): Promise<void> {
         try {
-            const data = await redis.get(`payment:${refNumber}`);
-            if (!data) return null;
-
-            // First parse as unknown to avoid unsafe assignment
-            const parsed = JSON.parse(data) as unknown;
-            
-            // Then validate and transform with Zod
-            return PaymentStatusSchema.parse(parsed);
+          const storedStatus = {
+            ...status,
+            lastUpdated: status.lastUpdated.toISOString(),
+            expiresAt: status.expiresAt.toISOString(),
+          };
+    
+          await redis.setex(
+            `payment:${refNumber}`,
+            1800,
+            JSON.stringify(storedStatus)
+          );
         } catch (error) {
-            console.error(`Failed to get payment status for ${refNumber}:`, error);
-            throw error;
+          console.error(`Failed to set payment status for ${refNumber}:`, error);
+          throw error;
         }
-    },
+      },
 
+    // async getPaymentStatus(refNumber: string): Promise<PaymentStatus | null> {
+    //     try {
+    //         const data = await redis.get(`payment:${refNumber}`);
+    //         if (!data) return null;
+
+    //         // First parse as unknown to avoid unsafe assignment
+    //         const parsed = JSON.parse(data) as unknown;
+            
+    //         // Then validate and transform with Zod
+    //         return PaymentStatusSchema.parse(parsed);
+    //     } catch (error) {
+    //         console.error(`Failed to get payment status for ${refNumber}:`, error);
+    //         throw error;
+    //     }
+    // },
+
+
+    async getPaymentStatus(refNumber: string): Promise<PaymentStatusType | null> {
+        try {
+          const data = await redis.get(`payment:${refNumber}`);
+          if (!data) return null;
+    
+          const parsed = JSON.parse(data);
+          
+          // Transform date strings back to Date objects
+          return {
+            ...parsed,
+            lastUpdated: new Date(parsed.lastUpdated),
+            expiresAt: new Date(parsed.expiresAt),
+          };
+        } catch (error) {
+          console.error(`Failed to get payment status for ${refNumber}:`, error);
+          throw error;
+        }
+      },
+      
     async deletePaymentStatus(refNumber: string): Promise<void> {
         try {
             await redis.del(`payment:${refNumber}`);

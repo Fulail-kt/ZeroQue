@@ -50,14 +50,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <Link href={`/${companyRoute}/item/${productId}`}>
-      <Card className="border-none bg-transparent flex justify-center md:h-56 h-48 overflow-hidden transition-all hover:shadow-lg">
+      <Card className="border-none bg-transparent flex justify-center md:h-56 h-48 mt-2 overflow-hidden transition-all hover:shadow-lg">
         {/* Image Container */}
-        <div className='w-40 md:w-52 relative flex flex-col items-center justify-end h-full'>
+        <div className='w-44 md:w-52 relative flex flex-col items-center justify-end h-full'>
           <div className="absolute top-0 overflow-hidden">
             <img
               src={product.images[0] ?? '/placeholder-image.jpg'} // Add fallback image
               alt={product.title}
-              className="md:w-44 md:h-40 size-32 rounded-xl shadow-lg dark:shadow-black/50 mt-2.5 md:mt-0 mb-5"
+              className="md:w-44 md:h-40 size-36 rounded-xl shadow-lg dark:shadow-black/50  md:mt-0 mb-5"
               height={100}
               width={100}
             />

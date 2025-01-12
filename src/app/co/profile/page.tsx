@@ -11,6 +11,7 @@ import { api } from '~/trpc/react';
 import Image from 'next/image';
 import { BannerCard, BannerUploader } from '~/app/_components/page/profile/bannerManagement';
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
+import Link from 'next/link';
 
 interface QRCodeState {
   qrDataUrl: string | null;
@@ -386,16 +387,25 @@ const ProfilePage = () => {
         <h3 className="text-lg font-medium">Company Banners</h3>
         <BannerUploader onBannerAdd={handleAddBanner} />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {companyData?.banners?.map((banner) => (
-          <BannerCard
-            key={banner._id.toString()}
-            banner={banner}
-            onToggleActive={handleToggleActive}
-            onDelete={handleDeleteBanner}
-          />
-        ))}
-      </div>
+      {companyData?.banners?.length ?? 0 > 0 ? (
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {companyData?.banners?.map((banner) => (
+      <BannerCard
+        key={banner._id.toString()}
+        banner={banner}
+        onToggleActive={handleToggleActive}
+        onDelete={handleDeleteBanner}
+      />
+    ))}
+  </div>
+) : (
+  <div>
+    <p className="text-sm italic text-center font-serif">
+      Banner Image Tips: For the best display, please upload images with a 3:1 aspect ratio. This will ensure your banner looks great!
+    </p>
+  </div>
+)}
+
     </CardContent>
   </Card>
 </TabsContent>
@@ -497,9 +507,17 @@ const ProfilePage = () => {
                 {(companyData?.qrCode?.updated ?? qrState.generatedAt) && (
                   <div className="space-y-2">
                     <p className="text-sm font-medium mt-4">QR Code URL</p>
-                    <p className="text-sm text-gray-500 break-all">
-                      {companyData?.qrCode?.url ?? `https://zeroq.vercel.app/${companyData?.routeName}`}
-                    </p>
+                    <Link
+  href={companyData?.qrCode?.url ?? `https://zeroq.vercel.app/${companyData?.routeName}`}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <p title="Click here to View" className="text-sm text-blue-500 break-all">
+    {companyData?.qrCode?.url ?? `https://zeroq.vercel.app/${companyData?.routeName}`}
+  </p>
+</Link>
+
+
                   </div>
                 )}
               </div>

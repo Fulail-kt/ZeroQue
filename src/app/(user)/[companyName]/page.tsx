@@ -49,7 +49,7 @@ const Page = () => {
       companyId: companyId!,
       page: 1,
       pageSize: 10,
-      search: selectedCategory?.name === "All" ? "" : selectedCategory?.name ?? '',
+      search:selectedCategory?.name ?? '',
       status: "active",
     },
     {

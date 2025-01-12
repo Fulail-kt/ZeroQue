@@ -609,7 +609,7 @@ const CheckoutPage: React.FC = () => {
 
       {/* Payment Dialog */}
       <Dialog open={showPaymentDialog} onOpenChange={setShowPaymentDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md mx-auto rounded-md">
           <DialogHeader>
             <DialogTitle>Complete UPI Payment</DialogTitle>
           </DialogHeader>
@@ -706,7 +706,7 @@ const CheckoutPage: React.FC = () => {
                 </Button>
               )}
 
-              <Button
+              {/* <Button
                 variant="outline"
                 className="w-full"
                 onClick={() => {
@@ -717,7 +717,7 @@ const CheckoutPage: React.FC = () => {
                 }}
               >
                 {paymentStatus?.status === 'pending' ? 'View Orders' : 'Close'}
-              </Button>
+              </Button> */}
             </div>
           </div>
         </DialogContent>

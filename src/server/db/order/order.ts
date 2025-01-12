@@ -28,6 +28,19 @@ interface OrderDocument extends Document {
     expiresAt?: Date;
     qrCode?: string;
     upiUrl?: string;
+    intentData?: {  // Add this new field
+      pa: string;   // Payee address (UPI ID)
+      pn: string;   // Payee name
+      tr: string;   // Transaction reference
+      am: string;   // Amount
+      cu: string;   // Currency
+      mc: string;   // Merchant code
+      tn: string;   // Transaction note
+      mode?: string;
+      purpose?: string;
+      orgid?: string;
+      sign?: string;
+    };
     
   };
   status: 'pending' |'confirmed'| 'preparing' | 'ready'|"cancelled" ;
@@ -80,6 +93,19 @@ const OrderSchema = new Schema<OrderDocument, OrderModelType>(
       expiresAt: { type: Date },
       qrCode: { type: String },
       upiUrl: { type: String },
+      intentData: {  
+        pa: { type: String },
+        pn: { type: String },
+        tr: { type: String },
+        am: { type: String },
+        cu: { type: String },
+        mc: { type: String },
+        tn: { type: String },
+        mode: { type: String },
+        purpose: { type: String },
+        orgid: { type: String },
+        sign: { type: String }
+      }
     },
     status: {
       type: String,

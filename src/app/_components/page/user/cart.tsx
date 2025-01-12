@@ -13,6 +13,7 @@ import { Button } from "~/components/ui/button";
 import { ShoppingCart, Plus, Minus, Trash2 } from "lucide-react";
 import useCartStore from '~/store/store';
 import Link from 'next/link';
+import useCompanyStore from '~/store/general';
 
 // Product Type Definition
 type Product = {
@@ -44,7 +45,7 @@ const CartItem: React.FC<{
       <div>
         <h3 className="font-semibold">{item.title}</h3>
         <p className="text-sm">{item.type}</p>
-        <p className="text-muted-foreground">${item.price.toFixed(2)}</p>
+        <p className="text-muted-foreground">₹ {item.price.toFixed(2)}</p>
         <p className="text-xs text-muted-foreground">Stock: {item.stock}</p>
       </div>
     </div>
@@ -79,6 +80,7 @@ const CartItem: React.FC<{
 
 export const Cart: React.FC = () => {
   const { cart, removeFromCart } = useCartStore();
+  const {companyRoute} =useCompanyStore()
 
   const calculateTotal = (): number => {
     return cart.reduce((total: number, item: { price: number; quantity: number; }) => 
@@ -166,9 +168,9 @@ export const Cart: React.FC = () => {
               <div className="w-full">
                 <div className="flex justify-between mb-4">
                   <span className="font-semibold">Total</span>
-                  <span className="font-bold">${calculateTotal().toFixed(2)}</span>
+                  <span className="font-bold">₹ {calculateTotal().toFixed(2)}</span>
                 </div>
-                <Link href={'/checkout'}>
+                <Link href={`/${companyRoute as string}/checkout`}>
                   <SheetClose asChild>
                     <Button
                       className="w-full"

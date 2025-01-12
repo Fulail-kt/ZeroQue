@@ -25,13 +25,13 @@ export const PaymentDialog: React.FC<PaymentDialogProps> = ({
   onUPIButtonClick,
 }) => {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+    <Dialog  open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md mx-4 md:mx-auto rounded-md">
         <DialogHeader>
           <DialogTitle>Complete UPI Payment</DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4">
+        <div className="space-y-4 mx-3">
           {upiData?.qrCode && (
             <div className="flex justify-center">
               <img 

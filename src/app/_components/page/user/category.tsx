@@ -10,7 +10,7 @@ import Loading from '../../global/loading';
 
 interface CategoryProps {
   selectedCategory: ICategory | ICategoryDTO|null;
-  setSelectedCategory: (category: ICategory) => void;
+  setSelectedCategory: (category: ICategory|null) => void;
 }
 
 const Category: React.FC<CategoryProps> = ({ selectedCategory, setSelectedCategory }) => {
@@ -31,7 +31,7 @@ const Category: React.FC<CategoryProps> = ({ selectedCategory, setSelectedCatego
   }
 
   const defaultCategory: ICategory = {
-    _id: 'all', 
+    _id: 'all123', 
     name: 'All',
     description: 'View all categories',
     subcategories: [],
@@ -42,18 +42,30 @@ const Category: React.FC<CategoryProps> = ({ selectedCategory, setSelectedCatego
     $clone: () => ({}),
   } as unknown as ICategory;
 
+  const handleSelectCategory=(category:ICategory)=>{
+    if(category._id === selectedCategory?._id){
+      setSelectedCategory(null)
+      return
+    }
+    if(category.name === 'All'){
+      setSelectedCategory(null)
+      return
+    }
+    setSelectedCategory(category)
+  }
+
   const categories = [defaultCategory, ...(categoryQueryResult?.categories ?? [])];
 
   return (
-    <div className='grid grid-flow-col-dense w-full h-16 items-center mb-3 overflow-y-auto scrollbar-none'>
+    <div className={`grid grid-flow-col-dense w-full h-16 items-center mb-3 overflow-y-auto scrollbar-none`}>
       {categories.length > 0 ? (
         categories.map((category) => (
-          <div key={category._id?.toString()} className='flex gap-1 p-2'>
+          <div key={category._id?.toString()} className='flex gap-1 p-2 '>
             <h1
               className={`${
                 selectedCategory?._id === category._id?.toString() ? 'bg-primary rounded-md py-1 px-3  text-white' : ''
               } text whitespace-nowrap  capitalize cursor-pointer`}
-              onClick={() => setSelectedCategory(category)}
+              onClick={() => handleSelectCategory(category)}
             >
               {category.name}
             </h1>
