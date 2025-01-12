@@ -15,9 +15,18 @@ const PaymentStatusSchema = z.object({
 type PaymentStatus = z.infer<typeof PaymentStatusSchema>;
 
 // Helper type for the raw stored data
-type StoredPaymentStatus = Omit<PaymentStatus, 'lastUpdated'> & {
-    lastUpdated: string;
-};
+
+
+const StoredPaymentStatusSchema = z.object({
+    status: z.enum(['pending', 'completed', 'failed']),
+    lastUpdated: z.string(), // Date stored as ISO string
+    expiresAt: z.string(), // Date stored as ISO string
+    attempts: z.number(),
+    orderId: z.string(),
+    sellerId: z.string(),
+    amount: z.number(),
+    error: z.string().optional()
+  });
 
 type PaymentStatusType = {
     status: 'pending' | 'completed' | 'failed';
@@ -95,35 +104,20 @@ export const PaymentStore = {
         }
       },
 
-    // async getPaymentStatus(refNumber: string): Promise<PaymentStatus | null> {
-    //     try {
-    //         const data = await redis.get(`payment:${refNumber}`);
-    //         if (!data) return null;
 
-    //         // First parse as unknown to avoid unsafe assignment
-    //         const parsed = JSON.parse(data) as unknown;
-            
-    //         // Then validate and transform with Zod
-    //         return PaymentStatusSchema.parse(parsed);
-    //     } catch (error) {
-    //         console.error(`Failed to get payment status for ${refNumber}:`, error);
-    //         throw error;
-    //     }
-    // },
-
-
-    async getPaymentStatus(refNumber: string): Promise<PaymentStatusType | null> {
+      async getPaymentStatus(refNumber: string): Promise<PaymentStatusType | null> {
         try {
           const data = await redis.get(`payment:${refNumber}`);
           if (!data) return null;
     
-          const parsed = JSON.parse(data);
+          // Parse and validate the data against our schema
+          const parsedData = StoredPaymentStatusSchema.parse(JSON.parse(data));
           
-          // Transform date strings back to Date objects
+          // Transform the validated data into PaymentStatusType
           return {
-            ...parsed,
-            lastUpdated: new Date(parsed.lastUpdated),
-            expiresAt: new Date(parsed.expiresAt),
+            ...parsedData,
+            lastUpdated: new Date(parsedData.lastUpdated),
+            expiresAt: new Date(parsedData.expiresAt),
           };
         } catch (error) {
           console.error(`Failed to get payment status for ${refNumber}:`, error);

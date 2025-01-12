@@ -170,7 +170,7 @@ export const Cart: React.FC = () => {
                   <span className="font-semibold">Total</span>
                   <span className="font-bold">₹ {calculateTotal().toFixed(2)}</span>
                 </div>
-                <Link href={`/${companyRoute as string}/checkout`}>
+                <Link href={`/${companyRoute!}/checkout`}>
                   <SheetClose asChild>
                     <Button
                       className="w-full"
