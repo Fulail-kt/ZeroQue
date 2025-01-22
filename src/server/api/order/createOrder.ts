@@ -711,7 +711,7 @@ async function generateUpiPaymentIntent(order: {
 
     return { upiUrl, qrCode, refNumber, expiresAt, intentData };
   } catch (error) {
-    throw new Error(`Failed to generate UPI payment: ${error}`);
+    throw new Error(`Failed to generate UPI payment: ${error as Error}`);
   }
 }
 export const createOrder = publicProcedure
