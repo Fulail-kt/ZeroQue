@@ -25,7 +25,7 @@ export const sendVerificationEmail = async ({
   });
 
   // Construct verification link
-  const verificationLink = `${process.env.NEXT_AUTH_URL}/verify?token=${token}`;
+  const verificationLink = `${process.env.NEXT_PUBLIC_AUTH_URL}/verify?token=${token}`;
 
   try {
     // Send email

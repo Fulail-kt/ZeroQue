@@ -24,7 +24,7 @@ export const env = createEnv({
       MONGODB_URI: z.string().url(),
       CLOUDINARY_API_KEY: z.string(),
       CLOUDINARY_API_SECRET: z.string(),
-      NEXT_AUTH_URL:z.string().url()
+      // NEXT_AUTH_URL:z.string().url()
       
   },
 
@@ -35,6 +35,7 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_AUTH_URL:z.string(),
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: z.string(),
     
 
@@ -57,7 +58,9 @@ export const env = createEnv({
     // TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
     EMAIL_HOST: process.env.EMAIL_HOST,
     EMAIL_PASS: process.env.EMAIL_PASS,
-    NEXT_AUTH_URL:process.env.NEXT_AUTH_URL
+    // NEXT_AUTH_URL:process.env.NEXT_AUTH_URL,
+    NEXT_PUBLIC_AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL,
+    
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

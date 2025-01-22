@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
-import { Sun, Moon, Settings, User, Bell, Shield, Layout, Download, QrCode, Megaphone, TicketPercent, Loader2, Power } from 'lucide-react';
+import { Sun, Moon, Settings, User, Bell, Shield, Layout, Download, QrCode, Megaphone, TicketPercent, Loader2, Power, Info } from 'lucide-react';
 import { ModeToggle } from '~/app/_components/global/darkMode';
 import QRCode from 'qrcode';
 import { signOut, useSession } from 'next-auth/react';
@@ -12,6 +12,13 @@ import Image from 'next/image';
 import { BannerCard, BannerUploader } from '~/app/_components/page/profile/bannerManagement';
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import Link from 'next/link';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '~/components/ui/tooltip';
+import UpdateProfileModal from '~/app/_components/page/profile/profileUpdateModal';
+import { env } from "../../../env";
+
 
 interface QRCodeState {
   qrDataUrl: string | null;
@@ -20,11 +27,23 @@ interface QRCodeState {
   error: string | null;
 }
 
+const updateFormSchema = z.object({
+  routeName: z.string()
+    .min(2, "Route name must be at least 2 characters")
+    .regex(/^[a-z0-9-]+$/, "Route name can only contain lowercase letters, numbers, and hyphens")
+    .refine((value) => !value.startsWith('-') && !value.endsWith('-'),
+      "Route name cannot start or end with a hyphen"),
+  upiId: z.string()
+    .min(5, "UPI ID must be at least 5 characters")
+});
+
+type UpdateFormValues = z.infer<typeof updateFormSchema>;
+
 const handleLogout = async () => {
-  await signOut({ 
-     callbackUrl: '/auth/login' 
-   });
- };
+  await signOut({
+    callbackUrl: '/auth/login'
+  });
+};
 
 const LoadingSpinner = () => (
   <div className="flex h-screen items-center justify-center">
@@ -60,7 +79,8 @@ const ErrorAlert = ({ title, description }: { title: string; description: string
 
 const ProfilePage = () => {
   // All hooks must be called at the top level
-  const { data: session, status: sessionStatus } = useSession();
+  const { data: session, status: sessionStatus,update: updateSession } = useSession();
+
   const [qrState, setQrState] = useState<QRCodeState>({
     qrDataUrl: null,
     generatedAt: null,
@@ -68,17 +88,27 @@ const ProfilePage = () => {
     error: null
   });
   const [isUploading, setIsUploading] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [debouncedRouteName, setDebouncedRouteName] = useState("");
+
+  const updateForm = useForm<UpdateFormValues>({
+    resolver: zodResolver(updateFormSchema),
+    defaultValues: {
+      routeName: "",
+      upiId: ""
+    }
+  });
 
   const companyId = session?.user?.companyId;
   const utils = api.useUtils();
 
-  const { 
-    data: companyData, 
-    isLoading: companyLoading, 
-    error: companyError 
+  const {
+    data: companyData,
+    isLoading: companyLoading,
+    error: companyError
   } = api.company.getCompanyById.useQuery(
     { companyId: companyId! },
-    { 
+    {
       enabled: !!companyId,
       retry: false
     }
@@ -88,10 +118,11 @@ const ProfilePage = () => {
     onError: (error) => {
       console.error('Update failed:', error);
     }
+    
   });
 
   // Helper functions
-  const formatDate = (date: Date|null) => {
+  const formatDate = (date: Date | null) => {
     if (!date) return 'Not available';
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -99,6 +130,69 @@ const ProfilePage = () => {
       day: 'numeric',
       timeZone: 'UTC'
     });
+  };
+
+
+  const { data: routeCheckData, isLoading: isCheckingRoute } = api.company.checkRoute.useQuery(
+    {
+      slug: debouncedRouteName,
+      currentCompanyId: session?.user?.companyId
+    },
+    {
+      enabled: debouncedRouteName.length >= 2,
+    }
+  );
+
+  React.useEffect(() => {
+    if (companyData) {
+      updateForm.reset({
+        routeName: companyData.routeName ?? "",
+        upiId: companyData.upiId ?? ""
+      });
+    }
+  }, [companyData, updateForm]);
+
+  React.useEffect(() => {
+    const routeName = updateForm.watch('routeName');
+    const timer = setTimeout(() => {
+      if (routeName && routeName.length >= 2 && /^[a-z0-9-]+$/.test(routeName)) {
+        setDebouncedRouteName(routeName);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [updateForm.watch('routeName')]);
+
+  const handleUpdateProfile = async (data: UpdateFormValues) => {
+    if (routeCheckData?.exists && data.routeName !== companyData?.routeName) {
+      updateForm.setError('routeName', {
+        type: 'manual',
+        message: 'This route name is already taken'
+      });
+      return;
+    }
+
+    try {
+      await updateCompanyData.mutateAsync({
+        routeName: data.routeName,
+        upiId: data.upiId
+      });
+
+      if (session && data.routeName !== companyData?.routeName) {
+        await updateSession({
+          ...session,
+          user: {
+            ...session.user,
+            routeName: data.routeName
+          }
+        });
+      }
+
+      setIsUpdateModalOpen(false);
+      await utils.company.getCompanyById.invalidate();
+    } catch (error) {
+      console.error('Update failed:', error);
+    }
   };
 
   const generateQRCodeData = async (url: string) => {
@@ -112,9 +206,9 @@ const ProfilePage = () => {
           light: '#ffffff',
         },
       });
-  
+
       const base64Data = qrDataUrl.replace(/^data:image\/png;base64,/, '');
-      
+
       return {
         qr: base64Data,
         url: url
@@ -135,11 +229,11 @@ const ProfilePage = () => {
     }
 
     setQrState(prev => ({ ...prev, isGenerating: true, error: null }));
-    
+
     try {
-      const url = `https://zeroq.vercel.app/${companyData.routeName}`;
+      const url = `${env.NEXT_PUBLIC_AUTH_URL}/${companyData.routeName}`;
       const { qr, url: qrUrl } = await generateQRCodeData(url);
-      
+
       await updateCompanyData.mutateAsync({
         qrCode: { qr, url: qrUrl }
       });
@@ -168,7 +262,7 @@ const ProfilePage = () => {
     return qrState.qrDataUrl;
   };
 
-  const downloadQRCode = () => {
+  const downloadQRCode = async () => {
     const qrImage = getQrImageSrc();
     if (!qrImage) {
       setQrState(prev => ({
@@ -177,15 +271,82 @@ const ProfilePage = () => {
       }));
       return;
     }
-
+  
     try {
+      // Create a temporary container
+      const container = document.createElement('div');
+      container.style.position = 'absolute';
+      container.style.left = '-9999px';
+      container.style.background = 'white';
+      container.style.padding = '28px';
+      container.style.width = '300px';
+      container.style.display = 'flex';
+      container.style.flexDirection = 'column';
+      container.style.alignItems = 'center';
+      container.style.gap = '12px';
+  
+      // Add company name
+      
+      const nameElement = document.createElement('h2');
+      nameElement.textContent = companyData?.name ?? 'Company Name';
+      nameElement.style.fontSize = '24px';
+      nameElement.style.fontWeight = 'bold';
+      nameElement.style.color = '#1f2937';
+      nameElement.style.textAlign = 'center';
+      container.appendChild(nameElement);
+  
+      // Add QR code
+      const qrContainer = document.createElement('div');
+      qrContainer.style.padding = '12px';
+      qrContainer.style.background = 'white';
+      
+      const qrElement = document.createElement('img');
+      qrElement.src = qrImage;
+      qrElement.style.width = '200px';
+      qrElement.style.height = '200px';
+      qrElement.style.objectFit = 'contain';
+      qrContainer.appendChild(qrElement);
+      container.appendChild(qrContainer);
+  
+      // Add route name
+      const url = `${env.NEXT_PUBLIC_AUTH_URL}/${companyData?.routeName}`;
+      const routeElement = document.createElement('p');
+      routeElement.textContent = url ?? 'company-route';
+      routeElement.style.fontSize = '18px';
+      routeElement.style.color = '#4b5563';
+      routeElement.style.fontWeight = '500';
+      routeElement.style.textAlign = 'center';
+      container.appendChild(routeElement);
+  
+      // Add trademark
+      const trademarkElement = document.createElement('span');
+      trademarkElement.textContent = 'powered by zeroq';
+      trademarkElement.style.fontSize = '10px';
+      trademarkElement.style.color = '#9ca3af';
+      trademarkElement.style.position = 'absolute';
+      trademarkElement.style.bottom = '4px';
+      trademarkElement.style.right = '8px';
+      container.appendChild(trademarkElement);
+  
+      // Add to document temporarily
+      document.body.appendChild(container);
+  
+      // Convert to image using html2canvas
+      const { default: html2canvas } = await import('html2canvas');
+      const canvas = await html2canvas(container, {
+        backgroundColor: 'white',
+      });
+  
+      // Create download link
       const link = document.createElement('a');
-      link.href = qrImage;
-      link.download = `${companyData?.routeName ?? 'company'}-qr-code.png`;
-      document.body.appendChild(link);
+      link.href = canvas.toDataURL('image/png');
+      link.download = `${companyData?.name ?? 'company'}-qr-code.png`;
       link.click();
-      document.body.removeChild(link);
+  
+      // Clean up
+      document.body.removeChild(container);
     } catch (error) {
+      console.error('Failed to download QR code:', error);
       setQrState(prev => ({
         ...prev,
         error: 'Failed to download QR code. Please try again.'
@@ -203,11 +364,11 @@ const ProfilePage = () => {
         url: bannerData.url,
         isActive: true
       };
-      
+
       await updateCompanyData.mutateAsync({
         banners: [...(companyData?.banners ?? []), newBanner]
       });
-      
+
       await utils.company.getCompanyById.invalidate();
     } catch (error) {
       console.error('Failed to add banner:', error);
@@ -219,12 +380,12 @@ const ProfilePage = () => {
   const handleToggleActive = async (bannerId: string) => {
     if (!bannerId || !companyData?.banners) return;
 
-    const updatedBanners = companyData.banners.map(banner => 
-      banner._id.toString() === bannerId 
+    const updatedBanners = companyData.banners.map(banner =>
+      banner._id.toString() === bannerId
         ? { ...banner, isActive: !banner.isActive }
         : banner
     );
-    
+
     try {
       await updateCompanyData.mutateAsync({ banners: updatedBanners });
       await utils.company.getCompanyById.invalidate();
@@ -239,7 +400,7 @@ const ProfilePage = () => {
     const updatedBanners = companyData.banners.filter(
       banner => banner._id.toString() !== bannerId
     );
-    
+
     try {
       await updateCompanyData.mutateAsync({ banners: updatedBanners });
       await utils.company.getCompanyById.invalidate();
@@ -254,23 +415,23 @@ const ProfilePage = () => {
   }
 
   if (sessionStatus === 'unauthenticated') {
-    return <ErrorAlert 
-      title="Authentication Required" 
-      description="Please sign in to access your profile." 
+    return <ErrorAlert
+      title="Authentication Required"
+      description="Please sign in to access your profile."
     />;
   }
 
   if (!companyId) {
-    return <ErrorAlert 
-      title="Company ID Missing" 
-      description="Unable to load profile. Company ID not found." 
+    return <ErrorAlert
+      title="Company ID Missing"
+      description="Unable to load profile. Company ID not found."
     />;
   }
 
   if (companyError) {
-    return <ErrorAlert 
-      title="Error Loading Profile" 
-      description={companyError.message} 
+    return <ErrorAlert
+      title="Error Loading Profile"
+      description={companyError.message}
     />;
   }
 
@@ -283,9 +444,9 @@ const ProfilePage = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Company Profile</h1>
         <div className='flex gap-x-2'>
-          <ModeToggle className='size-7' style="outline"  />
+          <ModeToggle className='size-7' style="outline" />
           <Button variant="outline" onClick={handleLogout} className="size-7">
-          <Power />
+            <Power />
           </Button>
         </div>
       </div>
@@ -296,8 +457,8 @@ const ProfilePage = () => {
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className="relative">
               {companyData?.profile ? (
-                <img 
-                  src={companyData.profile} 
+                <img
+                  src={companyData.profile}
                   alt={companyData.name ?? 'Company Profile'}
                   width={96}
                   height={96}
@@ -346,7 +507,7 @@ const ProfilePage = () => {
         </TabsList>
 
         {/* Tab Contents */}
-        <TabsContent value="settings">
+        {/* <TabsContent value="settings">
           <Card>
             <CardContent className="p-6">
               <h3 className="text-lg font-medium mb-4">Profile Settings</h3>
@@ -378,37 +539,68 @@ const ProfilePage = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent> */}
+        <TabsContent value="settings">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-lg font-medium">Profile Settings</h3>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsUpdateModalOpen(true)}
+                >
+                  Update Profile
+                </Button>
+              </div>
+              <div className="space-y-4">
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">Route Name</label>
+                  <p className="text-sm text-gray-500">{companyData?.routeName}</p>
+                </div>
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">UPI ID</label>
+                  <p className="text-sm text-gray-500">{companyData?.upiId}</p>
+                </div>
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">Account Created</label>
+                  <p className="text-sm text-gray-500">
+                    {formatDate(companyData?.createdAt ?? null)}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="banner">
-  <Card>
-    <CardContent className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-medium">Company Banners</h3>
-        <BannerUploader onBannerAdd={handleAddBanner} />
-      </div>
-      {companyData?.banners?.length ?? 0 > 0 ? (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    {companyData?.banners?.map((banner) => (
-      <BannerCard
-        key={banner._id.toString()}
-        banner={banner}
-        onToggleActive={handleToggleActive}
-        onDelete={handleDeleteBanner}
-      />
-    ))}
-  </div>
-) : (
-  <div>
-    <p className="text-sm italic text-center font-serif">
-      Banner Image Tips: For the best display, please upload images with a 3:1 aspect ratio. This will ensure your banner looks great!
-    </p>
-  </div>
-)}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-medium">Company Banners</h3>
+                <BannerUploader onBannerAdd={handleAddBanner} />
+              </div>
+              {companyData?.banners?.length ?? 0 > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {companyData?.banners?.map((banner) => (
+                    <BannerCard
+                      key={banner._id.toString()}
+                      banner={banner}
+                      onToggleActive={handleToggleActive}
+                      onDelete={handleDeleteBanner}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div>
+                  <p className="text-sm italic text-center font-serif">
+                    Banner Image Tips: For the best display, please upload images with a 3:1 aspect ratio. This will ensure your banner looks great!
+                  </p>
+                </div>
+              )}
 
-    </CardContent>
-  </Card>
-</TabsContent>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="security">
           <Card>
@@ -444,90 +636,117 @@ const ProfilePage = () => {
           </Card>
         </TabsContent>
         <TabsContent value="QR Code">
-    <Card>
-      <CardContent className="p-4">
-        <h4 className="text-lg font-medium mb-2">Company QR Code</h4>
-        <div className="space-y-2">
-          <div className="">
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="flex-1">
-                {(companyData?.qrCode?.qr ?? qrState.qrDataUrl) ? (
-                  <div className="space-y-2">
-                    <div className="relative">
-                     <Image
-                     height={150}
-                     width={150} 
-    src={getQrImageSrc()??""}
-    alt="Company QR Code" 
-    className="max-w-[200px] border p-2 rounded-lg bg-white"
-  />
+          <Card>
+            <CardContent className="p-4">
+              <h4 className="text-lg font-medium mb-2">Company QR Code</h4>
+              <div className="space-y-2">
+                <div className="">
+                  <div className="flex flex-col md:flex-row gap-6">
+                    <div className="flex-1 ">
+                      {(companyData?.qrCode?.qr ?? qrState.qrDataUrl) ? (
+                        <div className="space-y-2">
+                          <div className="relative">
+                            <Image
+                              height={150}
+                              width={150}
+                              src={getQrImageSrc() ?? ""}
+                              alt="Company QR Code"
+                              className="max-w-[200px] border p-2 rounded-lg bg-white"
+                            />
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="inline-block absolute left-40 top-0 cursor-pointer ">
+                                    <Info className='size-4' />
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent className='text-emerald-400'>
+                                  <p>Download and display this QR code at your business location</p>
+                                  <p>for easy customer access to your digital queue.</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                          <div className='flex gap-x-2 items-center'>
+                            <Button
+                              variant="outline"
+                              onClick={generateQRCode}
+                              disabled={qrState.isGenerating}
+                              className="w-full md:w-auto"
+                            >
+                              {qrState.isGenerating ? 'Generating...' : 'Regenerate'}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={downloadQRCode}
+                              className="w-full md:w-auto"
+                            >
+                              Download
+                            </Button>
+
+                          </div>
+                        </div>
+                      ) : (
+                        <Button
+                          variant="default"
+                          onClick={generateQRCode}
+                          disabled={qrState.isGenerating}
+                          className="w-full md:w-auto"
+                        >
+                          {qrState.isGenerating ? 'Generating...' : 'Generate QR Code'}
+                        </Button>
+                      )}
+
+                      {qrState.error && (
+                        <p className="text-sm text-red-500 mt-2">{qrState.error}</p>
+                      )}
                     </div>
-                    <div className='flex gap-x-2 items-center'>
-                      <Button
-                        variant="outline"
-                        onClick={generateQRCode}
-                        disabled={qrState.isGenerating}
-                        className="w-full md:w-auto"
-                      >
-                        {qrState.isGenerating ? 'Generating...' : 'Regenerate'}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={downloadQRCode}
-                        className="w-full md:w-auto"
-                      >
-                        Download
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <Button 
-                    variant="default" 
-                    onClick={generateQRCode}
-                    disabled={qrState.isGenerating}
-                    className="w-full md:w-auto"
-                  >
-                    {qrState.isGenerating ? 'Generating...' : 'Generate QR Code'}
-                  </Button>
-                )}
-                
-                {qrState.error && (
-                  <p className="text-sm text-red-500 mt-2">{qrState.error}</p>
-                )}
-              </div>
-              <div className="flex-1">
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">Last Updated</label>
-                  <p className="text-sm text-gray-500">
-                    {companyData?.qrCode?.updated 
-                      ? formatDate(companyData.qrCode.updated)
-                      : 'Not generated yet'}
-                  </p>
-                </div> 
-                {(companyData?.qrCode?.updated ?? qrState.generatedAt) && (
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium mt-4">QR Code URL</p>
-                    <Link
-  href={companyData?.qrCode?.url ?? `https://zeroq.vercel.app/${companyData?.routeName}`}
-  target="_blank"
-  rel="noopener noreferrer"
->
-  <p title="Click here to View" className="text-sm text-blue-500 break-all">
-    {companyData?.qrCode?.url ?? `https://zeroq.vercel.app/${companyData?.routeName}`}
-  </p>
-</Link>
+                    <div className="flex-1">
+                      <div className="grid gap-2">
+                        <label className="text-sm font-medium">Last Updated</label>
+                        <p className="text-sm text-gray-500">
+                          {companyData?.qrCode?.updated
+                            ? formatDate(companyData.qrCode.updated)
+                            : 'Not generated yet'}
+                        </p>
+                      </div>
+                      {(companyData?.qrCode?.updated ?? qrState.generatedAt) && (
+                        <div className="space-y-2">
+                          <p className="text-sm font-medium mt-4">QR Code URL</p>
+                          <Link
+                            href={companyData?.qrCode?.url ?? `${env.NEXT_PUBLIC_AUTH_URL}/${companyData?.routeName}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <p title="Click here to View" className="text-sm text-blue-500 break-all">
+                              {companyData?.qrCode?.url ?? `${env.NEXT_PUBLIC_AUTH_URL}/${companyData?.routeName}`}
+                            </p>
+                          </Link>
 
 
+                        </div>
+                      )}
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  </TabsContent>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
+      {companyData && (
+        <UpdateProfileModal
+          isOpen={isUpdateModalOpen}
+          onClose={() => setIsUpdateModalOpen(false)}
+          initialData={{
+            routeName: companyData.routeName ?? "",
+            upiId: companyData.upiId ?? ""
+          }}
+          onUpdate={handleUpdateProfile}
+          isCheckingRoute={isCheckingRoute}
+          isRouteNameTaken={!!routeCheckData?.exists}
+        />
+      )}
     </div>
   );
 };

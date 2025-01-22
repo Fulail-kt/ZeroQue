@@ -286,6 +286,8 @@ import { Button } from '~/components/ui/button';
 import { ModeToggle } from './_components/global/darkMode';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useTranslation } from 'react-i18next';
+import LangSelector from './_components/global/langSelector';
 
 interface Feature {
     icon: React.ReactNode;
@@ -348,6 +350,8 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, del
 );
 
 const LandingPage: React.FC = () => {
+
+    const {t} = useTranslation()
     const companyFeatures: Feature[] = [
         {
             icon: <Settings className="w-8 h-8 text-primary" />,
@@ -457,6 +461,7 @@ const LandingPage: React.FC = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5 }}
                     >
+                        <LangSelector/>
                         <ModeToggle />
                         <Link href='/auth/login'>
                             <Button variant="outline" size="sm">Login</Button>
@@ -480,16 +485,18 @@ const LandingPage: React.FC = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.4 }}
+                         data-translate="true"
                     >
-                        The End Of The Line
+                        {t('home.slogan')}
                     </motion.h2>
                     <motion.p 
                         className="text-lg mb-6 text-muted-foreground"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.6 }}
+                         data-translate="true"
                     >
-                        Experience the future of dining where queues are history. Order smarter, dine faster.
+                        {t('home.sloganDesc')}
                     </motion.p>
                     <motion.div 
                         className="flex flex-col sm:flex-row gap-3"
@@ -497,11 +504,11 @@ const LandingPage: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.8 }}
                     >
-                        <Button className="group">
-                            Get Started
+                        <Button className="group"  data-translate="true">
+                        {t('home.buttons.getStarted')}
                             <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </Button>
-                        <Button variant="outline">Learn More</Button>
+                        <Button  data-translate="true" variant="outline"> {t('home.buttons.learnMore')}</Button>
                     </motion.div>
                 </motion.div>
 
@@ -531,13 +538,13 @@ const LandingPage: React.FC = () => {
             </main>
 
             <section className="py-16 bg-muted/5">
-                <div className="container mx-auto px-4">
+                <div  data-translate="true" className="container mx-auto px-4">
                     {renderFeatureSection(
                         companyFeatures,
                         "For Businesses",
                         "Empower your business with smart queue management and real-time analytics."
                     )}
-                    <div className="my-16" />
+                    <div className="my-16"  data-translate="true" />
                     {renderFeatureSection(
                         userFeatures,
                         "For Users",
@@ -550,15 +557,15 @@ const LandingPage: React.FC = () => {
                 <div className="container mx-auto px-4">
                     <div className="grid md:grid-cols-4 gap-8">
                         <div>
-                            <h5 className="font-bold text-lg mb-3 text-primary">ZEROQUE</h5>
-                            <p className="text-sm text-muted-foreground">
+                            <h5  data-translate="true" className="font-bold text-lg mb-3 text-primary">ZEROQUE</h5>
+                            <p  data-translate="true" className="text-sm text-muted-foreground">
                                 Where convenience meets innovation.
                             </p>
                         </div>
                         
                         {Object.entries(footerLinks).map(([title, links]) => (
-                            <div key={title}>
-                                <h6 className="font-semibold mb-3">{title}</h6>
+                            <div  data-translate="true" key={title}>
+                                <h6  className="font-semibold mb-3">{title}</h6>
                                 <ul className="space-y-2">
                                     {links.map((link) => (
                                         <li key={link.label}>

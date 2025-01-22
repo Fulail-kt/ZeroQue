@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 import { ThemeProvider } from "~/components/theme-provider"
 // import Navbar from "./_components/navbar";
 import { SessionProvider } from "next-auth/react";
+import { I18nProvider } from "~/i18n/config";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <head />
         <body className="font-sans">
           <SessionProvider>
+          <I18nProvider>
             <ThemeProvider
               attribute="class"
               defaultTheme="system"
@@ -33,6 +35,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 <div className="">{children}</div></TRPCReactProvider>
                 <Toaster />
             </ThemeProvider>
+          </I18nProvider>
           </SessionProvider>
         </body>
       </html>
