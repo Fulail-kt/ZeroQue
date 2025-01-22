@@ -349,7 +349,38 @@ const CheckoutPage: React.FC = () => {
     
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     if (isMobile) {
+      const queryParams = upiData.upiUrl.split('?')[1];
+      if (!queryParams) return;
+  
+      const apps: Record<string, string> = {
+        phonepe: `phonepe://pay?${queryParams}`,
+        gpay: `tez://upi/pay?${queryParams}`,
+        paytm: `paytmmp://pay?${queryParams}`
+      };
+      
+      const tryNextApp = (appUrls: string[]) => {
+        if (appUrls.length === 0) {
+          setPaymentError("No compatible UPI app found. Please try scanning the QR code instead.");
+          return;
+        }
+        
+        const currentApp = appUrls[0];
+        if (currentApp) {
+          window.location.href = currentApp;
+        }
+        
+        setTimeout(() => {
+          if (document.hidden) return;
+          tryNextApp(appUrls.slice(1));
+        }, 1000);
+      };
+  
       window.location.href = upiData.upiUrl;
+      setTimeout(() => {
+        if (!document.hidden) {
+          tryNextApp(Object.values(apps));
+        }
+      }, 1000);
     }
   };
 
