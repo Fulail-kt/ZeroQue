@@ -40,18 +40,22 @@ if (!i18n.isInitialized) {
 export function I18nProvider({ children }: PropsWithChildren) {
   const [isLoading, setIsLoading] = useState(true);
 
-  const langChange=async(savedLang:string)=>{
-    await i18n.changeLanguage(savedLang);
-  }
   useEffect(() => {
-    // Get saved language from localStorage
-    const savedLang = localStorage.getItem('selectedLanguage');
-    
-    if (savedLang && Object.keys(resources).includes(savedLang)) {
-      langChange(savedLang)
-    }
-    
-    setIsLoading(false);
+    const initLanguage = async () => {
+      try {
+        const savedLang = localStorage.getItem('selectedLanguage');
+        
+        if (savedLang && Object.keys(resources).includes(savedLang)) {
+          await i18n.changeLanguage(savedLang);
+        }
+      } catch (error) {
+        console.error('Failed to change language:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    void initLanguage();
   }, []);
 
   if (isLoading) {
