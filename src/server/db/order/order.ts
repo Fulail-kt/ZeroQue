@@ -38,8 +38,6 @@ interface OrderDocument extends Document {
       tn: string;   // Transaction note
       mode?: string;
       purpose?: string;
-      orgid?: string;
-      sign?: string;
     };
     
   };
@@ -103,8 +101,6 @@ const OrderSchema = new Schema<OrderDocument, OrderModelType>(
         tn: { type: String },
         mode: { type: String },
         purpose: { type: String },
-        orgid: { type: String },
-        sign: { type: String }
       }
     },
     status: {
