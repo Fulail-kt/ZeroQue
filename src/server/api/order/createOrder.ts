@@ -466,8 +466,9 @@ export const createOrder = publicProcedure
       //   });
       // }
 
+      console.log(company,"company-------------------")
       const seller={
-        upiId:company.upiId ?? '7400468008@ibl' ,
+        upiId:company.upiId ?? '' ,
           businessName: company.name ?? 'zeroQ business partner'
       }
 
