@@ -449,6 +449,8 @@ async function generateUpiPaymentIntent(order: {
 export const createOrder = publicProcedure
   .input(orderInputSchema)
   .mutation(async ({ input }) => {
+
+    console.log(input, "input-------------------")
     try {
       const company = await CompanyModel.findById(input.companyId);
       if (!company) {

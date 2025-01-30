@@ -440,20 +440,20 @@ const LandingPage: React.FC = () => {
                         transition={{ duration: 0.5 }}
                     >
                         <Image
-                            src='/assets/0q-d-rm.png'
-                            alt="ZeroQue Logo"
+                            src='/assets/qend.png'
+                            alt="Qend Logo"
                             className="dark:hidden w-10 h-10"
                             width={40} height={40}
                             priority
                         />
                         <Image
-                            src='/assets/0-q-x.png'
-                            alt="ZeroQue Logo"
+                            src='/assets/qend-dark.png'
+                            alt="Qend Logo"
                             className="hidden dark:block w-10 h-10"
                             width={40} height={40}
                             priority
                         />
-                        <h1 className="text-xl hidden font-bold sm:flex text-primary">ZEROQUE</h1>
+                        <h1 className="text-xl hidden font-bold sm:flex text-primary">QEND</h1>
                     </motion.div>
                     <motion.div 
                         className="flex items-center space-x-3"
@@ -521,16 +521,16 @@ const LandingPage: React.FC = () => {
                     <Image
                         width={300}
                         height={300}
-                        src='/assets/0-q-x.png'
-                        alt="ZeroQue App"
+                        src='/assets/qend-dark.png'
+                        alt="Qend App"
                         className="hidden dark:block w-64 hover:scale-105 transition-transform duration-300"
                         priority
                     />
                     <Image
                         width={300}
                         height={300}
-                        src='/assets/0q-d-rm.png'
-                        alt="ZeroQue App"
+                        src='/assets/qend.png'
+                        alt="Qend App"
                         className="dark:hidden w-64 hover:scale-105 transition-transform duration-300"
                         priority
                     />
@@ -557,7 +557,7 @@ const LandingPage: React.FC = () => {
                 <div className="container mx-auto px-4">
                     <div className="grid md:grid-cols-4 gap-8">
                         <div>
-                            <h5  data-translate="true" className="font-bold text-lg mb-3 text-primary">ZEROQUE</h5>
+                            <h5  data-translate="true" className="font-bold text-lg mb-3 text-primary">QEND</h5>
                             <p  data-translate="true" className="text-sm text-muted-foreground">
                                 Where convenience meets innovation.
                             </p>
@@ -595,7 +595,7 @@ const LandingPage: React.FC = () => {
                     </div>
                     <div className="mt-8 pt-6 border-t border-border text-center">
                         <p className="text-xs text-muted-foreground">
-                            © 2024 ZeroQue. All rights reserved.
+                            © 2024 QEND. All rights reserved.
                         </p>
                     </div>
                 </div>

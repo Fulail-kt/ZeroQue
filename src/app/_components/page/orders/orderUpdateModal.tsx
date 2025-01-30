@@ -49,11 +49,11 @@ const StatusChangeDialog: React.FC<Props> = ({
         <AlertDialogHeader>
           <AlertDialogTitle>Confirm Status Change</AlertDialogTitle>
           <div className="space-y-4">
-            {isPaymentIncomplete && (
+            {/* {isPaymentIncomplete && (
               <div className="text-red-500 font-medium">
                 Payment is not completed yet.
               </div>
-            )}
+            )} */}
             
             <AlertDialogDescription>
               Are you sure you want to change the order status to {newStatus}?

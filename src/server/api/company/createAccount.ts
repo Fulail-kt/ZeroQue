@@ -56,7 +56,7 @@ export const createAccount = publicProcedure
       // Send verification email
       await sendVerificationEmail({
         to: savedCompany.email,
-        name: savedCompany.name ?? "ZEROQUE-User",
+        name: savedCompany.name ?? "QEND-User",
         token: verificationToken
       });
 

@@ -31,7 +31,7 @@ export const sendVerificationEmail = async ({
     // Send email
     const info = await transporter.sendMail({
       from: {
-        name:  "ZEROQUE",
+        name:  "QEND",
         address: env.EMAIL_HOST
       },
       to,
@@ -89,7 +89,7 @@ export const sendOrderConfirmationEmail = async ({
     // Send email
     const info = await transporter.sendMail({
       from: {
-        name: "ZEROQUE",
+        name: "QEND",
         address: env.EMAIL_HOST
       },
       to,
@@ -124,7 +124,7 @@ const generateOrderConfirmationEmailTemplate = (orderDetails: {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Confirmation - ZEROQUE</title>
+    <title>Order Confirmation - QEND</title>
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -185,7 +185,7 @@ const generateOrderConfirmationEmailTemplate = (orderDetails: {
 <body>
     <div class="container">
         <div class="header">
-            <h1>ZEROQUE</h1>
+            <h1>QEND</h1>
             <p>Order Confirmation</p>
         </div>
         <div class="content">
@@ -226,7 +226,7 @@ const generateOrderConfirmationEmailTemplate = (orderDetails: {
             <p>We appreciate your business! If you have any questions about your order, please contact our support team.</p>
         </div>
         <div class="footer">
-            © ${new Date().getFullYear()} ZEROQUE. All rights reserved.
+            © ${new Date().getFullYear()} QEND. All rights reserved.
             <br>Questions? Contact our support team.
         </div>
     </div>
@@ -243,7 +243,7 @@ const generateVerificationEmailTemplate = (
   <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Verify Your ZEROQUE Account</title>
+      <title>Verify Your QEND Account</title>
       <style>
           body {
               font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -304,19 +304,19 @@ const generateVerificationEmailTemplate = (
   <body>
       <div class="container">
           <div class="header">
-              <h1>ZEROQUE</h1>
+              <h1>QEND</h1>
           </div>
           <div class="content">
               <h2>Verify Your Email</h2>
               <p>Hi ${name},</p>
-              <p>Welcome to ZEROQUE! Click the button below to verify your email address and get started:</p>
+              <p>Welcome to QEND! Click the button below to verify your email address and get started:</p>
               <a href="${verificationLink}" class="btn">Verify Email</a>
               <p style="color: #6b7280;">If the button doesn't work, copy and paste this link:</p>
               <p style="word-break: break-all; color: #2575fc;">${verificationLink}</p>
               <p style="color: #6b7280; font-size: 0.9em;">This link expires in 24 hours</p>
           </div>
           <div class="footer">
-              © ${new Date().getFullYear()} ZEROQUE. All rights reserved.
+              © ${new Date().getFullYear()} QEND. All rights reserved.
               <br>If you didn't create an account, please ignore this email.
           </div>
       </div>

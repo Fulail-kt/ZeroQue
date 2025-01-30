@@ -74,7 +74,7 @@ const CheckoutPage: React.FC = () => {
   } = useOrderStore();
   
   // State management
-  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'online'|'upi'>('upi');
+  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'online'|'upi'>('cash');
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -526,7 +526,8 @@ const CheckoutPage: React.FC = () => {
             </div>
 
             {/* Payment Method Section */}
-            <div className="space-y-4">
+
+           {/* <div className="space-y-4">
               <Label>Payment Method</Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Button
@@ -548,7 +549,7 @@ const CheckoutPage: React.FC = () => {
                   <span>Pay with UPI</span>
                 </Button>
               </div>
-            </div>
+            </div> */}
 
             {/* Coupon Section */}
             <div>
