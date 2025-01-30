@@ -157,7 +157,7 @@ const UpdateProfileModal = ({
                     </div>
                   </FormControl>
                   <FormDescription>
-                    This will be your unique URL: zeroq.vercel.app/{field.value}
+                    This will be your unique URL: QEND.vercel.app/{field.value}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

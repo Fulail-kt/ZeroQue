@@ -320,7 +320,7 @@ const ProfilePage = () => {
   
       // Add trademark
       const trademarkElement = document.createElement('span');
-      trademarkElement.textContent = 'powered by zeroq';
+      trademarkElement.textContent = 'powered by QEND';
       trademarkElement.style.fontSize = '10px';
       trademarkElement.style.color = '#9ca3af';
       trademarkElement.style.position = 'absolute';

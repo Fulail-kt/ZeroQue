@@ -78,7 +78,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>ZeroQ | Home</title>
+        <title>QEND | Home</title>
       </Head>
       <nav className='md:hidden items-center justify-between px-4 flex h-16 fixed top-0'>
         <div className="ml-4 flex">
