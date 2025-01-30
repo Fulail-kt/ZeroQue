@@ -442,15 +442,15 @@ const LandingPage: React.FC = () => {
                         <Image
                             src='/assets/qend.png'
                             alt="Qend Logo"
-                            className="dark:hidden w-10 h-10"
-                            width={40} height={40}
+                            className="dark:hidden size-6"
+                            width={30} height={30}
                             priority
                         />
                         <Image
                             src='/assets/qend-dark.png'
                             alt="Qend Logo"
-                            className="hidden dark:block w-10 h-10"
-                            width={40} height={40}
+                            className="hidden dark:block size-6"
+                            width={30} height={30}
                             priority
                         />
                         <h1 className="text-xl hidden font-bold sm:flex text-primary">QEND</h1>
