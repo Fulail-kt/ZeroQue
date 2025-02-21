@@ -1,0 +1,92 @@
+{
+    "sections": [
+      {
+        "title": "General Questions",
+        "questions": [
+          {
+            "question": "What is this AI recruitment application?",
+            "answer": "This application uses artificial intelligence to streamline the hiring process by screening candidates, analyzing resumes, and providing insights to recruiters."
+          },
+          {
+            "question": "How does AI help in recruitment?",
+            "answer": "AI automates resume screening, matches candidates to job roles, and conducts preliminary assessments to ensure the best-fit candidates are shortlisted efficiently."
+          },
+          {
+            "question": "Who can use this platform?",
+            "answer": "The platform is designed for both recruiters and job seekers. Recruiters can post job listings and evaluate candidates, while job seekers can apply for positions and take AI-based assessments."
+          }
+        ]
+      },
+      {
+        "title": "For Job Seekers",
+        "questions": [
+          {
+            "question": "How do I create an account?",
+            "answer": "Click on the 'Sign Up' button, enter your details, upload your resume, and verify your email to start applying for jobs."
+          },
+          {
+            "question": "How can I apply for a job?",
+            "answer": "Once logged in, browse job listings, click on a suitable job, and submit your resume. You may also be required to complete an AI-based skill assessment."
+          },
+          {
+            "question": "How do AI assessments work?",
+            "answer": "Our AI system evaluates your skills and experience based on the job description. You may be asked to answer questions or complete coding challenges."
+          },
+          {
+            "question": "Can I edit my application after submission?",
+            "answer": "No, but you can withdraw your application and submit a new one if needed."
+          },
+          {
+            "question": "How will I know if I am shortlisted?",
+            "answer": "You will receive an email notification and can track your application status in your profile dashboard."
+          }
+        ]
+      },
+      {
+        "title": "For Recruiters",
+        "questions": [
+          {
+            "question": "How do I post a job listing?",
+            "answer": "Sign in to your recruiter account, go to the 'Post a Job' section, fill in job details, set AI screening preferences, and publish the listing."
+          },
+          {
+            "question": "How does AI filter applications?",
+            "answer": "The AI reviews resumes based on keywords, skills, experience, and predefined criteria to shortlist top candidates."
+          },
+          {
+            "question": "Can I manually review applications?",
+            "answer": "Yes, you can access the list of all applicants and manually review their profiles."
+          },
+          {
+            "question": "How can I conduct interviews?",
+            "answer": "You can schedule interviews through the platform, use automated AI interviews, or conduct live video interviews."
+          },
+          {
+            "question": "How do I contact shortlisted candidates?",
+            "answer": "You can send direct messages or emails through the platform’s built-in communication system."
+          }
+        ]
+      },
+      {
+        "title": "Technical & Support Questions",
+        "questions": [
+          {
+            "question": "What should I do if I forget my password?",
+            "answer": "Click 'Forgot Password' on the login page, enter your email, and follow the instructions to reset it."
+          },
+          {
+            "question": "Is my data secure?",
+            "answer": "Yes, we use encryption and secure authentication methods to protect user data."
+          },
+          {
+            "question": "How can I contact support?",
+            "answer": "Go to the 'Help & Support' section on the website or email us at support@example.com."
+          },
+          {
+            "question": "Can I delete my account?",
+            "answer": "Yes, go to 'Account Settings' and select 'Delete Account.' This action is irreversible."
+          }
+        ]
+      }
+    ]
+  }

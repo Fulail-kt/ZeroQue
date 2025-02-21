@@ -12,12 +12,43 @@
 
 
 
-/** @type {import('next').NextConfig} */
-const config = {
-    typescript: {
-      ignoreBuildErrors: false,
-    },
-    reactStrictMode: true,
-  };
+// /** @type {import('next').NextConfig} */
+// const config = {
+//     typescript: {
+//       ignoreBuildErrors: false,
+//     },
+//     reactStrictMode: true,
+//   };
   
-  export default config;
+//   export default config;
+
+// import { withAxiom } from 'next-axiom';
+
+// /** @type {import("next").NextConfig} */
+// const config = {
+//   experimental: {},
+//   webpack: (config) => {
+//     config.resolve.fallback = {
+//       ...config.resolve.fallback,
+//       fs: false,
+//       path: false,
+//     };
+//     return config;
+//   },
+// };
+
+// export default withAxiom(config);
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: '/api/model/:path*',
+        destination: 'https://storage.googleapis.com/tfjs-models/savedmodel/mobilenet_v2/:path*'
+      }
+    ]
+  }
+}
+
+export default nextConfig

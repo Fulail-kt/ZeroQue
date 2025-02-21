@@ -2,6 +2,10 @@
     "rewrites": [
       { "source": "/signup", "destination": "/signup" },
       { "source": "/:path*", "destination": "/:path*" }
-    ]
+    ],
+    "functions": {
+      "app/api/**/*.js": {
+        "memory": 3008
+      }
+    }
   }
-  

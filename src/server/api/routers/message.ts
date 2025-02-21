@@ -1,7 +1,6 @@
-
-import { sendWhatsAppOTP } from "../sendMessage/sendMessag";
+import { getBotResponse } from "../sendMessage/sendMessag";
 import { createTRPCRouter } from "../trpc";
 
 export const messageRouter=createTRPCRouter({
-    sendWhatsAppOTP
+    getBotResponse
 })

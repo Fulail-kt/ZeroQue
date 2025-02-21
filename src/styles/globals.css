@@ -219,7 +219,16 @@
   }
 }
 
+.scrollbar-thin {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent; /* Firefox */
+}
 
+/* For Chrome, Safari, and Opera */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px; /* For horizontal scrollbars */
+}
 
 .scrollbar-none {
   -ms-overflow-style: none; /* IE and Edge */

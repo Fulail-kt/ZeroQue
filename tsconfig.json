@@ -3,12 +3,11 @@
     /* Base Options: */
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "target": "es2022",
+    "target": "ES2023",
     "allowJs": true,
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "isolatedModules": true,
-    
     /* Strictness */
     "strict": true,
     "types": ["next", "next/types/global", "next/navigation"],
@@ -17,7 +16,7 @@
     "strictNullChecks": true,
 
     /* Bundled projects */
-    "lib": ["dom", "dom.iterable", "ES2022"],
+    "lib": ["dom", "dom.iterable","ES2023"],
     "noEmit": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
@@ -29,7 +28,8 @@
     /* Path Aliases */
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "@/server/*": ["./server/*"]
     }
   },
   "include": [
