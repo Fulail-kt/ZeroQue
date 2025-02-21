@@ -203,39 +203,6 @@ const qnaData = {
 };
 
 
-// let isModelTrained = false;
-
-// async function trainModel() {
-//   if (isModelTrained) return;
-  
-//   console.log("Training NLP model with variations...");
-  
-  
-//   qnaData.faqs.forEach((faq) => {
-//     manager.addDocument("en", faq.question, faq.question);
-
-//     if (faq.variations && Array.isArray(faq.variations)) {
-//       faq.variations.forEach((variation) => {
-//         manager.addDocument("en", variation, faq.question);
-//       });
-//     }
-    
-//     faq.answers.forEach((answer) => {
-//       manager.addAnswer("en", faq.question, answer);
-//     });
-//   });
-  
-//   await manager.train();
-//   console.log("NLP model training complete");
-//   isModelTrained = true;
-  
-//   const testResponse = await manager.process("en", "How does this platform work?");
-//   console.log("Test response:", JSON.stringify(testResponse, null, 2));
-// }
-
-// trainModel();
-
-// export { manager, qnaData };
 
 let isModelTrained = false;
 
